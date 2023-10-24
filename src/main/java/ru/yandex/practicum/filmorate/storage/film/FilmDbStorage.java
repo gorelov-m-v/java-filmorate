@@ -192,7 +192,7 @@ public class FilmDbStorage implements FilmStorage {
                     "JOIN films_directors AS fd ON f.film_id = fd.film_id " +
                     "LEFT JOIN mpa_ratings AS mr ON f.mpa_id = mr.mpa_id " +
                     "WHERE director_id = :dirId " +
-                    "ORDER BY likes";
+                    "ORDER BY likes DESC ";
 
 
             Map<String, Object> params = new HashMap<>();
