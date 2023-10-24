@@ -49,6 +49,12 @@ public class FilmServiceImpl implements FilmService {
 
 
     @Override
+    public List<Film> getSortFilms(Integer dirId, String sort) {
+        return storage.getSortFilm(dirId, sort);
+    }
+
+
+    @Override
     public void addLike(Integer userId, Integer filmId) {
         User user = userStorage.getUserById(userId).orElseThrow(() -> new NotFoundException("Пользователь не найден"));
         Film film = getStorageFilmId(filmId);
