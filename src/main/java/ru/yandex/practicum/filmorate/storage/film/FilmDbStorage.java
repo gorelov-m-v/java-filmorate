@@ -293,9 +293,14 @@ public class FilmDbStorage implements FilmStorage {
 
     @Override
     public List<Film> getSortFilm(Integer dirId, String sort) {
-        if (sort.equals("likes")) return getSortByLikes(dirId);
-        else if (sort.equals("year")) return getSortByYear(dirId);
-        else throw new NotFoundException("Некорректный ввод");
+        switch (sort) {
+            case "likes":
+                return getSortByLikes(dirId);
+            case "year":
+                return getSortByYear(dirId);
+            default:
+                throw new NotFoundException("Некорректный ввод");
+        }
     }
 
 
