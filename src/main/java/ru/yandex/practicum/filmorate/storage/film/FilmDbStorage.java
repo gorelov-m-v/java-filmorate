@@ -111,25 +111,11 @@ public class FilmDbStorage implements FilmStorage {
                 "FROM films AS f " +
                 "LEFT JOIN mpa_ratings AS mr ON f.mpa_id = mr.mpa_id";
 
-        return namedParameterJdbcTemplate.query(sql, rs -> {
-            List<Film> list = new ArrayList<>();
-            while (rs.next()) {
-                Film film = new Film();
-                film.setId(rs.getInt("film_id"));
-                film.setName(rs.getString("name"));
-                film.setDescription(rs.getString("description"));
-                film.setReleaseDate(rs.getDate("release_date").toLocalDate());
-                film.setDuration(rs.getInt("duration"));
-                film.setLikes(rs.getInt("likes"));
-                film.setMpa(new RateMPA(rs.getInt("mpa_id"), rs.getString("mpa_name")));
-                list.add(film);
-            }
-            return list;
-        });
+        return createFilmList(sql);
     }
 
 
-    private void loadFilmGenres(List<Film> films) {
+    public void loadFilmGenres(List<Film> films) {
         if (films.isEmpty()) return;
         Map<Integer, Film> map = films
                 .stream()
@@ -157,7 +143,7 @@ public class FilmDbStorage implements FilmStorage {
         });
     }
 
-    private void loadFilmDirector(List<Film> films) {
+    public void loadFilmDirector(List<Film> films) {
         if (films.isEmpty()) return;
         Map<Integer, Film> map = films
                 .stream()
@@ -198,17 +184,7 @@ public class FilmDbStorage implements FilmStorage {
             Map<String, Object> params = new HashMap<>();
             params.put("dirId", dirId);
 
-            List<Film> films = new ArrayList<>(namedParameterJdbcTemplate.query(sql, params,
-                    (rs, rowNum) -> new Film(
-                            rs.getInt("film_id"),
-                            rs.getString("name"),
-                            rs.getString("description"),
-                            rs.getDate("release_date").toLocalDate(),
-                            rs.getInt("duration"),
-                            rs.getInt("likes"),
-                            new RateMPA(rs.getInt("mpa_id"), rs.getString("mpa_name")),
-                            new ArrayList<>(),
-                            new ArrayList<>())));
+            List<Film> films = createFilmList(sql, params);
             loadFilmGenres(films);
             loadFilmDirector(films);
             return films;
@@ -230,17 +206,7 @@ public class FilmDbStorage implements FilmStorage {
             Map<String, Object> params = new HashMap<>();
             params.put("dirId", dirId);
 
-            List<Film> films = new ArrayList<>(namedParameterJdbcTemplate.query(sql, params,
-                    (rs, rowNum) -> new Film(
-                            rs.getInt("film_id"),
-                            rs.getString("name"),
-                            rs.getString("description"),
-                            rs.getDate("release_date").toLocalDate(),
-                            rs.getInt("duration"),
-                            rs.getInt("likes"),
-                            new RateMPA(rs.getInt("mpa_id"), rs.getString("mpa_name")),
-                            new ArrayList<>(),
-                            new ArrayList<>())));
+            List<Film> films = createFilmList(sql, params);
             loadFilmGenres(films);
             loadFilmDirector(films);
             return films;
@@ -402,17 +368,7 @@ public class FilmDbStorage implements FilmStorage {
             Map<String, Object> params = new HashMap<>();
             params.put("user_id", user.getId());
 
-            List<Film> films = new ArrayList<>(namedParameterJdbcTemplate.query(sql, params,
-                    (rs, rowNum) -> new Film(
-                            rs.getInt("film_id"),
-                            rs.getString("name"),
-                            rs.getString("description"),
-                            rs.getDate("release_date").toLocalDate(),
-                            rs.getInt("duration"),
-                            rs.getInt("likes"),
-                            new RateMPA(rs.getInt("mpa_id"), rs.getString("mpa_name")),
-                            new ArrayList<>(),
-                            new ArrayList<>())));
+            List<Film> films = createFilmList(sql, params);
             loadFilmGenres(films);
             loadFilmDirector(films);
             return films;
@@ -420,5 +376,41 @@ public class FilmDbStorage implements FilmStorage {
         } catch (EmptyResultDataAccessException e) {
             return Collections.emptyList();
         }
+    }
+
+    public List<Film> createFilmList(String sql, Map<String, Object> params) {
+        return namedParameterJdbcTemplate.query(sql, params, rs -> {
+            List<Film> list = new ArrayList<>();
+            while (rs.next()) {
+                Film film = new Film();
+                film.setId(rs.getInt("film_id"));
+                film.setName(rs.getString("name"));
+                film.setDescription(rs.getString("description"));
+                film.setReleaseDate(rs.getDate("release_date").toLocalDate());
+                film.setDuration(rs.getInt("duration"));
+                film.setLikes(rs.getInt("likes"));
+                film.setMpa(new RateMPA(rs.getInt("mpa_id"), rs.getString("mpa_name")));
+                list.add(film);
+            }
+            return list;
+        });
+    }
+
+    public List<Film> createFilmList(String sql) {
+        return namedParameterJdbcTemplate.query(sql, rs -> {
+            List<Film> list = new ArrayList<>();
+            while (rs.next()) {
+                Film film = new Film();
+                film.setId(rs.getInt("film_id"));
+                film.setName(rs.getString("name"));
+                film.setDescription(rs.getString("description"));
+                film.setReleaseDate(rs.getDate("release_date").toLocalDate());
+                film.setDuration(rs.getInt("duration"));
+                film.setLikes(rs.getInt("likes"));
+                film.setMpa(new RateMPA(rs.getInt("mpa_id"), rs.getString("mpa_name")));
+                list.add(film);
+            }
+            return list;
+        });
     }
 }

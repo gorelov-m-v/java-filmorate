@@ -7,12 +7,10 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.exeption.NotFoundException;
+import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.User;
-
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import ru.yandex.practicum.filmorate.storage.film.FilmDbStorage;
+import java.util.*;
 
 @Slf4j
 @Component
@@ -20,6 +18,7 @@ import java.util.Optional;
 public class UserDbStorage implements UserStorage {
 
     private final NamedParameterJdbcTemplate namedParameterJdbcTemplate;
+    private final FilmDbStorage filmDbStorage;
 
     private Map<String, Object> getParams(User user) {
         Map<String, Object> parameters = new HashMap<>();
@@ -195,5 +194,24 @@ public class UserDbStorage implements UserStorage {
                 rs.getDate("birthday").toLocalDate()
 
         ));
+    }
+
+    @Override
+    public List<Film> getUserRecommendations(Integer id) {
+        String sql = "SELECT * " +
+                "FROM likes AS l " +
+                "JOIN films AS f ON l.film_id = f.film_id " +
+                "JOIN mpa_ratings AS mr ON f.mpa_id = mr.mpa_id " +
+                "WHERE l.film_id NOT IN (SELECT film_id FROM likes WHERE user_id = :user_id)";
+
+        Map<String, Object> params = new HashMap<>();
+        params.put("user_id", id);
+
+        List<Film> recommendedFilmLis = filmDbStorage.createFilmList(sql, params);
+
+        filmDbStorage.loadFilmGenres(Objects.requireNonNull(recommendedFilmLis));
+        filmDbStorage.loadFilmDirector(recommendedFilmLis);
+
+        return recommendedFilmLis;
     }
 }
