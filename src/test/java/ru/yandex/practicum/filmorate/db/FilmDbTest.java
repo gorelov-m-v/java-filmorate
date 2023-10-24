@@ -15,6 +15,7 @@ import ru.yandex.practicum.filmorate.storage.film.FilmDbStorage;
 import ru.yandex.practicum.filmorate.storage.user.UserDbStorage;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -47,6 +48,7 @@ public class FilmDbTest {
                 .releaseDate(LocalDate.of(2000, 12, 12))
                 .mpa(rateMPA)
                 .genres(List.of(genre))
+                .directors(new ArrayList<>())
                 .build();
         storage.createFilm(film);
         userStorage.createUser(user);
@@ -87,7 +89,7 @@ public class FilmDbTest {
     public void testUpdateFilm() {
         Film film = new Film(1, "new", "new",
                 LocalDate.of(1999, 1, 1), 1, 0,
-                new RateMPA(3, "PG-13"), List.of(new Genre(3, "Мультфильм")));
+                new RateMPA(3, "PG-13"), List.of(new Genre(3, "Мультфильм")), new ArrayList<>());
         storage.updateFilm(film);
         Film film1 = storage.getFilmById(1).orElseThrow();
 
