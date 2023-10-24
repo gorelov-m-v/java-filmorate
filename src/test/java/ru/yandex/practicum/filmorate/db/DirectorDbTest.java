@@ -45,7 +45,7 @@ public class DirectorDbTest {
                 .directors(new ArrayList<>())
                 .build();
         storageFilm.createFilm(film);
-        storage.createDirector(new Director(1, "new Director"));
+        storage.createDirector(new Director(1, "new  Director"));
     }
 
 
