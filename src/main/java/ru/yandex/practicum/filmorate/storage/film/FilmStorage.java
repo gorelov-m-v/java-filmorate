@@ -11,6 +11,8 @@ public interface FilmStorage {
 
     void updateFilm(Film film);
 
+    List<Film> getSortFilm(Integer dirId, String sort);
+
     List<Film> getFilms();
 
     Optional<Film> getFilmById(int id);

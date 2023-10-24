@@ -14,6 +14,8 @@ public interface FilmService {
 
     List<Film> getFilms();
 
+    List<Film> getSortFilms(Integer dirId, String sort);
+
     void addLike(Integer userId, Integer filmId);
 
     void removeLike(Integer filmId, Integer userId);
