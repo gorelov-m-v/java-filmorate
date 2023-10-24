@@ -103,7 +103,6 @@ public class FilmDbTest {
         assertEquals("new", films.get(1).getName());
     }
 
-
     @Test
     public void testFindGenreByFilm() {
         Film film = storage.getFilmById(1).orElseThrow();
@@ -112,7 +111,6 @@ public class FilmDbTest {
         assertEquals(1, genre.size());
         assertEquals(genre.get(0).getName(), "Комедия");
     }
-
 
     @Test
     public void testUpdateFilm() {
@@ -138,7 +136,6 @@ public class FilmDbTest {
                 .isEqualTo(film.getMpa().getName());
     }
 
-
     @Test
     public void testAddLikeToFilm() {
         Film film = storage.getFilmById(1).orElseThrow();
@@ -157,7 +154,6 @@ public class FilmDbTest {
 
         assertEquals(0, storage.getFilmById(1).orElseThrow().getLikes());
     }
-
 
     @Test
     public void testGetUserFilms() {
