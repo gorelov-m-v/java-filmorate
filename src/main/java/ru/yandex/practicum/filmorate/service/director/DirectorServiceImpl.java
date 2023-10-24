@@ -16,7 +16,7 @@ public class DirectorServiceImpl implements DirectorService {
 
     private Director getStorageDirectorId(Integer id) {
         return storage.getDirectorById(id)
-                .orElseThrow(() -> new NotFoundException("Режиссер с id " + id + " не найден"));
+                .orElseThrow(() -> new NotFoundException("Режиссер с id " + id + " не найден."));
     }
 
     @Override
