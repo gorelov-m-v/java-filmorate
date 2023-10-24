@@ -16,31 +16,31 @@ public class DirectorController {
 
 
     @GetMapping
-    public List<Director> getDirectors(){
+    public List<Director> getDirectors() {
         return service.getAllDirectors();
     }
 
 
     @GetMapping("/{id}")
-    public Director getDirectorById(@PathVariable Integer id){
+    public Director getDirectorById(@PathVariable Integer id) {
         return service.getDirectorById(id);
     }
 
 
     @PostMapping
-    public Director createDirector(@Valid @RequestBody Director director){
+    public Director createDirector(@Valid @RequestBody Director director) {
         return service.createDirector(director);
     }
 
 
     @PutMapping
-    public Director updateDirector(@Valid @RequestBody Director director){
+    public Director updateDirector(@Valid @RequestBody Director director) {
         return service.updateDirector(director);
     }
 
 
     @DeleteMapping("/{id}")
-    public void deleteDirector(@PathVariable Integer id){
+    public void deleteDirector(@PathVariable Integer id) {
         service.deleteDirectorById(id);
     }
 }
