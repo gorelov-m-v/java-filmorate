@@ -187,13 +187,13 @@ public class FilmDbStorage implements FilmStorage {
 
     private List<Film> getSortByLikes(Integer dirId) {
         try {
-            String sql = "SELECT * " +
-                    "FROM films AS t " +
-                    "LEFT JOIN mpa_ratings AS mr ON t.mpa_id = mr.mpa_id " +
-                    "LEFT JOIN films_directors AS fd ON t.film_id = fd.film_id " +
-                    "JOIN likes AS l ON t.film_id = l.film_id " +
-                    "WHERE fd.director_id = :dirId " +
-                    "ORDER BY t.likes DESC ";
+            String sql = "SELECT *" +
+                    "FROM films AS f " +
+                    "JOIN films_directors AS fd ON f.film_id = fd.film_id " +
+                    "LEFT JOIN mpa_ratings AS mr ON f.mpa_id = mr.mpa_id " +
+                    "WHERE director_id = :dirId " +
+                    "ORDER BY likes";
+
 
             Map<String, Object> params = new HashMap<>();
             params.put("dirId", dirId);
@@ -220,13 +220,12 @@ public class FilmDbStorage implements FilmStorage {
 
     private List<Film> getSortByYear(Integer dirId) {
         try {
-            String sql = "SELECT * " +
-                    "FROM films AS t " +
-                    "LEFT JOIN mpa_ratings AS mr ON t.mpa_id = mr.mpa_id " +
-                    "LEFT JOIN films_directors AS fd ON t.film_id = fd.film_id " +
-                    "JOIN likes AS l ON t.film_id = l.film_id " +
-                    "WHERE fd.director_id = :dirId " +
-                    "ORDER BY EXTRACT(YEAR FROM t.release_date)";
+            String sql = "SELECT *" +
+                    "FROM films AS f " +
+                    "JOIN films_directors AS fd ON f.film_id = fd.film_id " +
+                    "LEFT JOIN mpa_ratings AS mr ON f.mpa_id = mr.mpa_id " +
+                    "WHERE director_id = :dirId " +
+                    "ORDER BY YEAR(release_date)";
 
             Map<String, Object> params = new HashMap<>();
             params.put("dirId", dirId);
@@ -269,6 +268,7 @@ public class FilmDbStorage implements FilmStorage {
         namedParameterJdbcTemplate.update(sql, namedParameters, keyHolder);
         film.setId((Integer) keyHolder.getKey());
         saveFilmGenres(film);
+        saveFilmDirectors(film);
         return film;
     }
 
