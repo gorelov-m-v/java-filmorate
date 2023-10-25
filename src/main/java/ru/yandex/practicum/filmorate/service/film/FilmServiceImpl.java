@@ -8,6 +8,7 @@ import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.film.FilmStorage;
 import ru.yandex.practicum.filmorate.storage.user.UserStorage;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -72,4 +73,23 @@ public class FilmServiceImpl implements FilmService {
                 .limit(limit)
                 .collect(Collectors.toList());
     }
+
+    @Override
+    public List<Film> getCommonFilms(Integer userId, Integer friendId) {
+        List<Film> userLikedFilms = storage.getUserLikedFilms(userId);
+        List<Film> friendLikedFilms = storage.getUserLikedFilms(friendId);
+
+        List<Film> commonFilms = new ArrayList<>(userLikedFilms);
+        commonFilms.retainAll(friendLikedFilms);
+
+        return commonFilms;
+    }
+
+    @Override
+    public void deleteFilm(int filmId) {
+        Film film = getStorageFilmId(filmId);
+        storage.deleteFilm(filmId);
+    }
+
+
 }

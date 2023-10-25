@@ -276,4 +276,35 @@ public class FilmDbStorage implements FilmStorage {
             return Collections.emptyList();
         }
     }
+
+    @Override
+    public List<Film> getUserLikedFilms(Integer userId) {
+        String sql = "SELECT f.* " +
+                "FROM likes AS l " +
+                "JOIN films AS f ON l.film_id = f.film_id " +
+                "WHERE l.user_id = :user_id";
+
+        Map<String, Object> params = new HashMap<>();
+        params.put("user_id", userId);
+
+        return namedParameterJdbcTemplate.query(sql, params, (rs, rowNum) -> {
+            Film film = new Film();
+            film.setId(rs.getInt("film_id"));
+            film.setName(rs.getString("name"));
+            // Здесь можно заполнить остальные поля фильма
+            return film;
+        });
+    }
+
+    @Override
+    public void deleteFilm(int filmId) {
+        // Напишите SQL-запрос для удаления фильма из базы данных
+        String deleteFilmSql = "DELETE FROM films WHERE film_id = :filmId";
+
+        Map<String, Object> params = new HashMap<>();
+        params.put("filmId", filmId);
+
+        namedParameterJdbcTemplate.update(deleteFilmSql, params);
+    }
+
 }

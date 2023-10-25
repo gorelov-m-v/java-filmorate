@@ -196,4 +196,23 @@ public class UserDbStorage implements UserStorage {
 
         ));
     }
+
+    @Override
+    public void deleteUser(User user) {
+        try {
+            String deleteFriendsSql = "DELETE FROM friends WHERE user_id = :user_id OR friend_id = :user_id";
+            String deleteSql = "DELETE FROM users WHERE user_id = :user_id";
+
+            Map<String, Object> params = new HashMap<>();
+            params.put("user_id", user.getId());
+
+            namedParameterJdbcTemplate.update(deleteFriendsSql, params); // Удаление связей с друзьями
+            namedParameterJdbcTemplate.update(deleteSql, params); // Удаление пользователя
+
+            log.info("Пользователь с id {} удален.", user.getId());
+        } catch (EmptyResultDataAccessException e) {
+            log.warn("Пользователь с id {} не найден.", user.getId());
+            throw new NotFoundException(String.format("Пользователь с id %d не найден.", user.getId()));
+        }
+    }
 }
