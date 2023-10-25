@@ -74,6 +74,11 @@ public class FilmServiceImpl implements FilmService {
                 .collect(Collectors.toList());
     }
 
+    @Override
+    public List<Film> findCommonFilms(Integer userId, Integer friendId) {
+        List<Film> commonFilms = storage.findCommonFilms(userId, friendId);
+        return commonFilms;
+    }
 
 
 }
