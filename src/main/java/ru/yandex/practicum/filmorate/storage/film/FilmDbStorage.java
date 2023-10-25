@@ -216,6 +216,23 @@ public class FilmDbStorage implements FilmStorage {
         }
     }
 
+    private List<Film> getPopular(String sql, Integer limit, Integer year, Integer genreId) {
+        try {
+            Map<String, Object> params = new HashMap<>();
+            params.put("year", year);
+            params.put("genreId", genreId);
+            params.put("limit", limit);
+
+            List<Film> films = createFilmList(sql, params);
+            loadFilmGenres(films);
+            loadFilmDirector(films);
+            return films;
+
+        } catch (EmptyResultDataAccessException e) {
+            return Collections.emptyList();
+        }
+    }
+
 
     @Override
     public Film createFilm(Film film) {
@@ -277,6 +294,43 @@ public class FilmDbStorage implements FilmStorage {
         loadFilmDirector(films);
 
         return films;
+    }
+
+    @Override
+    public List<Film> getMostPopular(Integer limit, Integer year, Integer genreId) {
+        String sql;
+        if (year != null && genreId == null) {
+            sql = "SELECT *" +
+                    "FROM films AS f " +
+                    "LEFT JOIN mpa_ratings AS mr ON f.mpa_id = mr.mpa_id " +
+                    "WHERE YEAR(release_date) = :year " +
+                    "ORDER BY likes DESC " +
+                    "LIMIT :limit";
+        } else if (year == null && genreId != null) {
+            sql = "SELECT * " +
+                    "FROM films AS f " +
+                    "JOIN film_genre AS fg ON f.film_id = fg.film_id " +
+                    "LEFT JOIN mpa_ratings AS mr ON f.mpa_id = mr.mpa_id " +
+                    "WHERE fg.genre_id = :genreId " +
+                    "ORDER BY likes DESC " +
+                    "LIMIT :limit";
+        } else if (year != null) {
+            sql = "SELECT * " +
+                    "FROM films AS f " +
+                    "JOIN film_genre AS fg ON f.film_id = fg.film_id " +
+                    "LEFT JOIN mpa_ratings AS mr ON f.mpa_id = mr.mpa_id " +
+                    "WHERE fg.genre_id = :genreId " +
+                    "AND YEAR(release_date) = :year " +
+                    "ORDER BY likes DESC " +
+                    "LIMIT :limit";
+        } else {
+            sql = "SELECT * " +
+                    "FROM films AS f " +
+                    "LEFT JOIN mpa_ratings AS mr ON f.mpa_id = mr.mpa_id " +
+                    "ORDER BY likes DESC " +
+                    "LIMIT :limit";
+        }
+        return getPopular(sql, limit, year, genreId);
     }
 
 

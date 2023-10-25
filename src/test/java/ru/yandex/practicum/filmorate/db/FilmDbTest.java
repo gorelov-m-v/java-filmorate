@@ -167,6 +167,55 @@ public class  FilmDbTest {
     }
 
     @Test
+    public void testGetMostPopularFilmsByYear() {
+        Film film = new Film(1, "new", "new",
+                LocalDate.of(1999, 1, 1), 1, 0,
+                new RateMPA(3, "PG-13"), List.of(new Genre(3, "Мультфильм")), new ArrayList<>());
+        storage.createFilm(film);
+
+        List<Film> films = storage.getMostPopular(1, 2000, null);
+        assertEquals(1, films.size());
+        assertEquals(2000, films.get(0).getReleaseDate().getYear());
+    }
+
+    @Test
+    public void testGetMostPopularFilmsByGenre() {
+        Film film = new Film(1, "new", "new",
+                LocalDate.of(1999, 1, 1), 1, 0,
+                new RateMPA(3, "PG-13"), List.of(new Genre(3, "Мультфильм")), new ArrayList<>());
+        storage.createFilm(film);
+
+        List<Film> films = storage.getMostPopular(1, null, 3);
+        assertEquals(1, films.size());
+        assertEquals(1999, films.get(0).getReleaseDate().getYear());
+        assertEquals(3, films.get(0).getGenres().get(0).getId());
+    }
+
+    @Test
+    public void testGetMostPopularFilmsByGenreAndYear() {
+        Film film = new Film(1, "new", "new",
+                LocalDate.of(1999, 1, 1), 1, 0,
+                new RateMPA(3, "PG-13"), List.of(new Genre(3, "Мультфильм")), new ArrayList<>());
+        storage.createFilm(film);
+
+        List<Film> films = storage.getMostPopular(1, 1999, 3);
+        assertEquals(1, films.size());
+        assertEquals(1999, films.get(0).getReleaseDate().getYear());
+        assertEquals(3, films.get(0).getGenres().get(0).getId());
+    }
+
+    @Test
+    public void testGetMostPopularFilms() {
+        Film film = new Film(1, "new", "new",
+                LocalDate.of(1999, 1, 1), 1, 0,
+                new RateMPA(3, "PG-13"), List.of(new Genre(3, "Мультфильм")), new ArrayList<>());
+        storage.createFilm(film);
+
+        List<Film> films = storage.getMostPopular(1, null, null);
+        assertEquals(1, films.size());
+    }
+
+    @Test
     public void shouldDeleteFilm() {
         int filmId = 1;
         storage.deleteFilm(filmId);
