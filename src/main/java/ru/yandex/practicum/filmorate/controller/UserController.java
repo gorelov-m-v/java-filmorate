@@ -91,4 +91,10 @@ public class UserController {
         log.info("Отправлен список общих друзей пользователей: " + id + " и " + otherId);
         return friends;
     }
+    @DeleteMapping("{userId}")
+    public void deleteUser(@PathVariable Integer userId) {
+        log.info("Запрос на удаление пользователя с id - " + userId);
+        service.deleteUser(userId);
+        log.info("Пользователь с id - " + userId + " удален");
+    }
 }
