@@ -74,4 +74,10 @@ public class UserServiceImpl implements UserService {
         User other = getCheckUserThrow(otherId);
         return storage.getSameFriend(user1, other);
     }
+
+    @Override
+    public void deleteUser(Integer userId) {
+        User user = storage.getUserById(userId).orElseThrow(() -> new NotFoundException("Пользователь с id " + userId + " не найден"));
+        storage.deleteUser(user);
+    }
 }

@@ -20,4 +20,6 @@ public interface UserService {
     List<User> getFriends(Integer id);
 
     List<User> getSameFriends(Integer userId, Integer friendId);
+
+    void deleteUser(Integer userId);
 }
