@@ -19,12 +19,13 @@ import java.util.Optional;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 
 @SpringBootTest
 @AutoConfigureTestDatabase
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
-public class FilmDbTest {
+public class  FilmDbTest {
     private final FilmDbStorage storage;
     private final UserDbStorage userStorage;
     private final DirectorStorage storageDir;
@@ -212,5 +213,14 @@ public class FilmDbTest {
 
         List<Film> films = storage.getMostPopular(1, null, null);
         assertEquals(1, films.size());
+    }
+
+    @Test
+    public void shouldDeleteFilm() {
+        int filmId = 1;
+        storage.deleteFilm(filmId);
+
+        Optional<Film> deletedFilm = storage.getFilmById(filmId);
+        assertFalse(deletedFilm.isPresent());
     }
 }

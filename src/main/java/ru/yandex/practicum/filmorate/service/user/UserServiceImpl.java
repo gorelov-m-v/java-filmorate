@@ -81,4 +81,10 @@ public class UserServiceImpl implements UserService {
         getCheckUserThrow(id);
         return storage.getUserRecommendations(id);
     }
+
+    @Override
+    public void deleteUser(Integer userId) {
+        User user = storage.getUserById(userId).orElseThrow(() -> new NotFoundException("Пользователь с id " + userId + " не найден"));
+        storage.deleteUser(user);
+    }
 }

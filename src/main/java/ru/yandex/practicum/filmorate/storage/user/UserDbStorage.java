@@ -10,6 +10,7 @@ import ru.yandex.practicum.filmorate.exeption.NotFoundException;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.film.FilmDbStorage;
+
 import java.util.*;
 
 @Slf4j
@@ -194,6 +195,25 @@ public class UserDbStorage implements UserStorage {
                 rs.getDate("birthday").toLocalDate()
 
         ));
+    }
+
+    @Override
+    public void deleteUser(User user) {
+        try {
+            String deleteFriendsSql = "DELETE FROM friends WHERE user_id = :user_id OR friend_id = :user_id";
+            String deleteSql = "DELETE FROM users WHERE user_id = :user_id";
+
+            Map<String, Object> params = new HashMap<>();
+            params.put("user_id", user.getId());
+
+            namedParameterJdbcTemplate.update(deleteFriendsSql, params);
+            namedParameterJdbcTemplate.update(deleteSql, params);
+
+            log.info("Пользователь с id {} удален.", user.getId());
+        } catch (EmptyResultDataAccessException e) {
+            log.warn("Пользователь с id {} не найден.", user.getId());
+            throw new NotFoundException(String.format("Пользователь с id %d не найден.", user.getId()));
+        }
     }
 
     @Override
