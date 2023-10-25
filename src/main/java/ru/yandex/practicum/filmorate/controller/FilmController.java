@@ -80,4 +80,14 @@ public class FilmController {
         return films;
     }
 
+    @GetMapping("/common")
+    public ResponseEntity<List<Film>> getCommonFilms(
+            @RequestParam Integer userId,
+            @RequestParam Integer friendId
+    ) {
+        List<Film> commonFilms = service.findCommonFilms(userId, friendId);
+        log.info("Запрос на получение общих фильмов для пользователей с userId - " + userId + " и friendId - " + friendId);
+        return ResponseEntity.ok(commonFilms);
+    }
+
 }
