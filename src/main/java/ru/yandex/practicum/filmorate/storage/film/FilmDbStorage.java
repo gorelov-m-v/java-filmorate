@@ -278,25 +278,6 @@ public class FilmDbStorage implements FilmStorage {
     }
 
     @Override
-    public List<Film> getUserLikedFilms(Integer userId) {
-        String sql = "SELECT f.* " +
-                "FROM likes AS l " +
-                "JOIN films AS f ON l.film_id = f.film_id " +
-                "WHERE l.user_id = :user_id";
-
-        Map<String, Object> params = new HashMap<>();
-        params.put("user_id", userId);
-
-        return namedParameterJdbcTemplate.query(sql, params, (rs, rowNum) -> {
-            Film film = new Film();
-            film.setId(rs.getInt("film_id"));
-            film.setName(rs.getString("name"));
-
-            return film;
-        });
-    }
-
-    @Override
     public void deleteFilm(int filmId) {
 
         String deleteFilmSql = "DELETE FROM films WHERE film_id = :filmId";
@@ -306,27 +287,4 @@ public class FilmDbStorage implements FilmStorage {
 
         namedParameterJdbcTemplate.update(deleteFilmSql, params);
     }
-
-    public List<Film> getCommonFilms(long userId1, long userId2) {
-
-        String sql = "SELECT f.* " +
-                "FROM likes AS l1 " +
-                "JOIN likes AS l2 ON l1.film_id = l2.film_id " +
-                "JOIN films AS f ON l1.film_id = f.film_id " +
-                "WHERE l1.user_id = :userId1 " +
-                "AND l2.user_id = :userId2";
-
-        Map<String, Object> params = new HashMap<>();
-        params.put("userId1", userId1);
-        params.put("userId2", userId2);
-
-        return namedParameterJdbcTemplate.query(sql, params, (rs, rowNum) -> {
-            Film film = new Film();
-            film.setId(rs.getInt("film_id"));
-            film.setName(rs.getString("name"));
-
-            return film;
-        });
-    }
-
 }

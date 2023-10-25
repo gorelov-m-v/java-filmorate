@@ -74,22 +74,6 @@ public class FilmServiceImpl implements FilmService {
                 .collect(Collectors.toList());
     }
 
-    @Override
-    public List<Film> getCommonFilms(Integer userId, Integer friendId) {
-        List<Film> userLikedFilms = storage.getUserLikedFilms(userId);
-        List<Film> friendLikedFilms = storage.getUserLikedFilms(friendId);
-
-        List<Film> commonFilms = new ArrayList<>(userLikedFilms);
-        commonFilms.retainAll(friendLikedFilms);
-
-        return commonFilms;
-    }
-
-    @Override
-    public void deleteFilm(int filmId) {
-        Film film = getStorageFilmId(filmId);
-        storage.deleteFilm(filmId);
-    }
 
 
 }
