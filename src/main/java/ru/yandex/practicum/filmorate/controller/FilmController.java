@@ -80,4 +80,11 @@ public class FilmController {
         return films;
     }
 
+    @DeleteMapping("/{filmId}")
+    public ResponseEntity<?> deleteFilm(@PathVariable Integer filmId) {
+        log.info("Запрос на удаление фильма с id - " + filmId);
+        service.deleteFilm(filmId);
+        log.info("Фильм с id - " + filmId + " удален");
+        return ResponseEntity.ok().build();
+    }
 }
