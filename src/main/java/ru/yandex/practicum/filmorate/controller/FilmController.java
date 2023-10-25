@@ -28,6 +28,13 @@ public class FilmController {
     }
 
 
+    @GetMapping("/director/{id}")
+    public List<Film> getSortFilms(@PathVariable Integer id,
+                                   @RequestParam String sortBy) {
+        return service.getSortFilms(id, sortBy);
+    }
+
+
     @PutMapping
     public Film updateFilm(@Valid @RequestBody Film film) {
         log.info("Запрос на обновление фильма");

@@ -3,6 +3,7 @@ package ru.yandex.practicum.filmorate.service.user;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.exeption.NotFoundException;
+import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.user.UserStorage;
 
@@ -73,6 +74,12 @@ public class UserServiceImpl implements UserService {
         User user1 = getCheckUserThrow(userId);
         User other = getCheckUserThrow(otherId);
         return storage.getSameFriend(user1, other);
+    }
+
+    @Override
+    public List<Film> getUserRecommendations(Integer id) {
+        getCheckUserThrow(id);
+        return storage.getUserRecommendations(id);
     }
 
     @Override

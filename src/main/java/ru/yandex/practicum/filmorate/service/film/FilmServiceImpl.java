@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.exeption.NotFoundException;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.User;
+import ru.yandex.practicum.filmorate.storage.director.DirectorStorage;
 import ru.yandex.practicum.filmorate.storage.film.FilmStorage;
 import ru.yandex.practicum.filmorate.storage.user.UserStorage;
 
@@ -17,6 +18,7 @@ import java.util.stream.Collectors;
 public class FilmServiceImpl implements FilmService {
     private final FilmStorage storage;
     private final UserStorage userStorage;
+    private final DirectorStorage storageDir;
 
     private Film getStorageFilmId(Integer id) {
         return storage.getFilmById(id).orElseThrow(() -> new NotFoundException("Фильм с id " + id + " не найден"));
@@ -46,6 +48,14 @@ public class FilmServiceImpl implements FilmService {
     @Override
     public List<Film> getFilms() {
         return storage.getFilms();
+    }
+
+
+    @Override
+    public List<Film> getSortFilms(Integer dirId, String sort) {
+        storageDir.getDirectorById(dirId)
+                .orElseThrow(() -> new NotFoundException("Режиссер с id - " + dirId + " не найден"));
+        return storage.getSortFilm(dirId, sort);
     }
 
 
