@@ -20,5 +20,5 @@ public interface FilmService {
 
     List<Film> getPopular(Integer limit);
 
-
+    void deleteFilm(Integer filmId);
 }

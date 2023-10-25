@@ -74,6 +74,10 @@ public class FilmServiceImpl implements FilmService {
                 .collect(Collectors.toList());
     }
 
-
+    @Override
+    public void deleteFilm(Integer filmId) {
+        Film film = getStorageFilmId(filmId);
+        storage.deleteFilm(filmId);
+    }
 
 }
