@@ -138,14 +138,4 @@ public class  FilmDbTest {
 
         assertEquals(1, films.size());
     }
-
-    @Test
-    public void shouldDeleteFilm() {
-        int filmId = 1;
-        storage.deleteFilm(filmId);
-
-        Optional<Film> deletedFilm = storage.getFilmById(filmId);
-        assertFalse(deletedFilm.isPresent());
-    }
-
 }

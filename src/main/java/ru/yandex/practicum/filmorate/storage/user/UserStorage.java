@@ -22,5 +22,4 @@ public interface UserStorage {
 
     List<User> getSameFriend(User user, User otherUser);
 
-    public void deleteUser(User user);
 }

@@ -95,13 +95,4 @@ public class UserDbTest {
         assertEquals(userStorage.getFriends(user).size(), 0);
     }
 
-    @Test
-    public void shouldDeleteUser() {
-        User user = userStorage.getUserById(1).orElseThrow();
-        userStorage.deleteUser(user);
-
-        // Убеждаемся, что пользователь удален
-        assertThrows(NotFoundException.class, () -> userStorage.getUserById(1).orElseThrow());
-    }
-
 }

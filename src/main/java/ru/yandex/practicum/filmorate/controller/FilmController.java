@@ -80,20 +80,4 @@ public class FilmController {
         return films;
     }
 
-    @GetMapping("/common")
-    public List<Film> getCommonFilms(@RequestParam Integer userId, @RequestParam Integer friendId) {
-        log.info("Запрос на получение общих фильмов для пользователей с id - " + userId + " и " + friendId);
-        List<Film> commonFilms = service.getCommonFilms(userId, friendId);
-        log.info("Список общих фильмов отправлен");
-        return commonFilms;
-    }
-
-    @DeleteMapping("/{filmId}")
-    public ResponseEntity<?> deleteFilm(@PathVariable int filmId) {
-        log.info("Запрос на удаление фильма с id - " + filmId);
-        service.deleteFilm(filmId);
-        log.info("Фильм с id - " + filmId + " удален");
-        return ResponseEntity.ok().build();
-    }
-
 }
