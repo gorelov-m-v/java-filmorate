@@ -22,4 +22,6 @@ public interface FilmStorage {
     void removeLike(User user, Film film);
 
     List<Film> getUserFilms(User user);
+
+    void deleteFilm(int filmId);
 }

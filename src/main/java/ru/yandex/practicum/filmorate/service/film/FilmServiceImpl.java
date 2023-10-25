@@ -82,4 +82,11 @@ public class FilmServiceImpl implements FilmService {
                 .limit(limit)
                 .collect(Collectors.toList());
     }
+
+    @Override
+    public void deleteFilm(Integer filmId) {
+        Film film = getStorageFilmId(filmId);
+        storage.deleteFilm(filmId);
+    }
+
 }

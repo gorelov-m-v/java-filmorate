@@ -378,6 +378,17 @@ public class FilmDbStorage implements FilmStorage {
         }
     }
 
+    @Override
+    public void deleteFilm(int filmId) {
+
+        String deleteFilmSql = "DELETE FROM films WHERE film_id = :filmId";
+
+        Map<String, Object> params = new HashMap<>();
+        params.put("filmId", filmId);
+
+        namedParameterJdbcTemplate.update(deleteFilmSql, params);
+    }
+
     public List<Film> createFilmList(String sql, Map<String, Object> params) {
         return namedParameterJdbcTemplate.query(sql, params, rs -> {
             List<Film> list = new ArrayList<>();

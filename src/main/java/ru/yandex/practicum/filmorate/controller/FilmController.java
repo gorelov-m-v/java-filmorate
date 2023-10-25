@@ -2,6 +2,7 @@ package ru.yandex.practicum.filmorate.controller;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.exeption.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
@@ -84,5 +85,13 @@ public class FilmController {
         List<Film> films = service.getPopular(count);
         log.info("Список популярных фильмов отправлен");
         return films;
+    }
+
+    @DeleteMapping("/{filmId}")
+    public ResponseEntity<?> deleteFilm(@PathVariable Integer filmId) {
+        log.info("Запрос на удаление фильма с id - " + filmId);
+        service.deleteFilm(filmId);
+        log.info("Фильм с id - " + filmId + " удален");
+        return ResponseEntity.ok().build();
     }
 }
