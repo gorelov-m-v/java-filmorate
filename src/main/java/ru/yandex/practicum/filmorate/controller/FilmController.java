@@ -96,4 +96,12 @@ public class FilmController {
         log.info("Фильм с id - " + filmId + " удален");
         return ResponseEntity.ok().build();
     }
+
+    @GetMapping("/search")
+    public List<Film> searchFilm(@RequestParam String query, @RequestParam String by) {
+         List<Film> films = service.searchFilm(query, by);
+        log.info("Фильм успешно найден");
+        return films;
+
+    }
 }

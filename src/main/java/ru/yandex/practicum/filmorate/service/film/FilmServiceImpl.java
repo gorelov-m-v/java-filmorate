@@ -9,7 +9,7 @@ import ru.yandex.practicum.filmorate.storage.director.DirectorStorage;
 import ru.yandex.practicum.filmorate.storage.film.FilmStorage;
 import ru.yandex.practicum.filmorate.storage.user.UserStorage;
 
-import java.util.List;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -84,5 +84,38 @@ public class FilmServiceImpl implements FilmService {
         Film film = getStorageFilmId(filmId);
         storage.deleteFilm(filmId);
     }
+
+    public List<Film> searchFilm(String query, String by) {
+        if (query == null || by == null) {
+            throw new IllegalArgumentException("Неверные параметры запроса");
+        }
+
+        query = query.toLowerCase();
+
+        if (by.equalsIgnoreCase("title,director")) {
+            List<Film> filmsByParams = storage.getFilmsByParams(query);
+
+            Set<Film> result = new HashSet<>(filmsByParams);
+
+
+            return new ArrayList<>(result);
+        } else if (by.equalsIgnoreCase("director")) {
+            return storage.getFilmByDirector(query);
+        } else if (by.equalsIgnoreCase("title")) {
+            return storage.getFilmByName(query);
+        } else {
+            throw new IllegalArgumentException("Неверное значение параметра 'by'");
+        }
+    }
+
+
+
+
+
+
+
+
+
+
 
 }

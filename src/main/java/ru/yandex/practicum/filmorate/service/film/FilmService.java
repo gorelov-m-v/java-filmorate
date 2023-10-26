@@ -23,4 +23,6 @@ public interface FilmService {
     List<Film> getPopular(Integer limit, Integer year, Integer genreId);
 
     void deleteFilm(Integer filmId);
+
+    List<Film> searchFilm(String query, String by);
 }

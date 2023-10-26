@@ -14,6 +14,7 @@ import ru.yandex.practicum.filmorate.exeption.NotFoundException;
 import ru.yandex.practicum.filmorate.model.*;
 
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.*;
 import java.util.function.Function;
@@ -478,4 +479,83 @@ public class FilmDbStorage implements FilmStorage {
             return list;
         });
     }
+
+    public List<Film> getFilmByDirector(String director) {
+        String sql = "SELECT * " +
+                "FROM films AS f " +
+                "LEFT JOIN mpa_ratings AS mr ON f.mpa_id = mr.mpa_id " +
+                "JOIN films_directors AS fd ON f.film_id = fd.film_id " +
+                "JOIN directors AS d ON fd.director_id = d.director_id " +
+                "WHERE LOWER(d.director_name) LIKE :director";
+
+        MapSqlParameterSource namedParameters = new MapSqlParameterSource();
+        namedParameters.addValue("director", "%" + director.toLowerCase() + "%");
+
+        List<Film> films = namedParameterJdbcTemplate.query(sql, namedParameters, (rs, rowNum) -> mapResultSetToFilm(rs));
+
+        loadFilmGenres(films);
+        loadFilmDirector(films);
+
+        return films;
+    }
+
+    public List<Film> getFilmByName(String name) {
+        String sql = "SELECT * " +
+                "FROM films AS f " +
+                "LEFT JOIN mpa_ratings AS mr ON f.mpa_id = mr.mpa_id " +
+                "WHERE LOWER(f.name) LIKE :name";
+
+        MapSqlParameterSource namedParameters = new MapSqlParameterSource();
+        namedParameters.addValue("name", "%" + name.toLowerCase() + "%");
+
+        List<Film> films = namedParameterJdbcTemplate.query(sql, namedParameters, (rs, rowNum) -> mapResultSetToFilm(rs));
+
+        loadFilmGenres(films);
+        loadFilmDirector(films);
+
+        return films;
+    }
+
+    public List<Film> getFilmsByParams(String query) {
+        String sql = "SELECT * " +
+                "FROM films AS f " +
+                "LEFT JOIN mpa_ratings AS mr ON f.mpa_id = mr.mpa_id " +
+                "JOIN films_directors AS fd ON f.film_id = fd.film_id " +
+                "JOIN directors AS d ON fd.director_id = d.director_id " +
+                "WHERE LOWER(f.name) LIKE :query OR LOWER(d.director_name) LIKE :query";
+
+        MapSqlParameterSource namedParameters = new MapSqlParameterSource();
+        namedParameters.addValue("query", "%" + query.toLowerCase() + "%");
+
+        List<Film> films = namedParameterJdbcTemplate.query(sql, namedParameters, (rs, rowNum) -> mapResultSetToFilm(rs));
+
+        loadFilmGenres(films);
+        loadFilmDirector(films);
+
+        return films;
+    }
+
+
+    private Film mapResultSetToFilm(ResultSet rs) throws SQLException {
+        Film film = new Film();
+        film.setId(rs.getInt("film_id"));
+        film.setName(rs.getString("name"));
+        film.setDescription(rs.getString("description"));
+        film.setReleaseDate(rs.getDate("release_date").toLocalDate());
+        film.setDuration(rs.getInt("duration"));
+        film.setLikes(rs.getInt("likes"));
+        film.setMpa(new RateMPA(rs.getInt("mpa_id"), rs.getString("mpa_name")));
+
+
+        return film;
+    }
+
+
+
+
 }
+
+
+
+
+
