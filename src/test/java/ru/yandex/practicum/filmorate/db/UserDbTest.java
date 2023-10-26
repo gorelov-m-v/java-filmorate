@@ -7,11 +7,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.DirtiesContext;
-import ru.yandex.practicum.filmorate.exeption.NotFoundException;
+import ru.yandex.practicum.filmorate.model.*;
+import ru.yandex.practicum.filmorate.storage.director.DirectorStorage;
+import ru.yandex.practicum.filmorate.storage.film.FilmDbStorage;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.user.UserDbStorage;
 
 import java.time.LocalDate;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -21,6 +24,8 @@ import static org.junit.jupiter.api.Assertions.*;
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
 public class UserDbTest {
     private final UserDbStorage userStorage;
+    private final FilmDbStorage filmDbStorage;
+    private final DirectorStorage storageDir;
 
     @BeforeEach
     public void createParams() {
@@ -95,4 +100,31 @@ public class UserDbTest {
         assertEquals(userStorage.getFriends(user).size(), 0);
     }
 
+    @Test
+    public void testGetRecommendedFilm() {
+        RateMPA rateMPA = new RateMPA(1, null);
+        Genre genre = new Genre(1, null);
+        storageDir.createDirector(new Director(1, "new"));
+        Film film = Film.builder()
+                .name("name")
+                .description("desc")
+                .duration(1)
+                .releaseDate(LocalDate.of(2000, 12, 12))
+                .mpa(rateMPA)
+                .genres(List.of(genre))
+                .directors(List.of(storageDir.getDirectorById(1).orElseThrow()))
+                .build();
+        filmDbStorage.createFilm(film);
+        filmDbStorage.addLike(userStorage.getUserById(1).orElseThrow(), filmDbStorage.getFilmById(1).orElseThrow());
+        User user = User.builder()
+                .name("name")
+                .login("login")
+                .email("email@email.ru")
+                .birthday(LocalDate.of(2000, 12, 12))
+                .build();
+        userStorage.createUser(user);
+        List<Film> films = userStorage.getUserRecommendations(2);
+
+        assertEquals(films.get(0).getId(), film.getId());
+    }
 }

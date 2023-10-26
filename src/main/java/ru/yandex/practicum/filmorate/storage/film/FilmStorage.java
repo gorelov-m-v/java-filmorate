@@ -11,6 +11,8 @@ public interface FilmStorage {
 
     void updateFilm(Film film);
 
+    List<Film> getSortFilm(Integer dirId, String sort);
+
     List<Film> getFilms();
 
     Optional<Film> getFilmById(int id);
@@ -22,4 +24,6 @@ public interface FilmStorage {
     List<Film> getUserFilms(User user);
 
     List<Film> findCommonFilms(Integer userId, Integer friendId);
+
+    void deleteFilm(int filmId);
 }
