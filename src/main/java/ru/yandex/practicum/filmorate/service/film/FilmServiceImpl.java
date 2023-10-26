@@ -4,12 +4,14 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.exeption.NotFoundException;
 import ru.yandex.practicum.filmorate.model.Film;
+import ru.yandex.practicum.filmorate.model.SearchFilmRequest;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.director.DirectorStorage;
 import ru.yandex.practicum.filmorate.storage.film.FilmStorage;
 import ru.yandex.practicum.filmorate.storage.user.UserStorage;
 
-import java.util.List;
+import javax.validation.Valid;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -85,4 +87,18 @@ public class FilmServiceImpl implements FilmService {
         storage.deleteFilm(filmId);
     }
 
+    public List<Film> searchFilm(@Valid SearchFilmRequest request) {
+        String query = request.getQuery().toLowerCase();
+        String by = request.getBy();
+
+        if (by.equalsIgnoreCase("title,director") || by.equalsIgnoreCase("director,title")) {
+            List<Film> filmsByParams = storage.getFilmsByParams(query);
+            Set<Film> result = new HashSet<>(filmsByParams);
+            return new ArrayList<>(result);
+        } else if (by.equalsIgnoreCase("director")) {
+            return storage.getFilmByDirector(query);
+        } else {
+            return storage.getFilmByName(query);
+        }
+    }
 }

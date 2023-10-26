@@ -1,6 +1,7 @@
 package ru.yandex.practicum.filmorate.service.film;
 
 import ru.yandex.practicum.filmorate.model.Film;
+import ru.yandex.practicum.filmorate.model.SearchFilmRequest;
 
 import java.util.List;
 
@@ -23,4 +24,6 @@ public interface FilmService {
     List<Film> getPopular(Integer limit, Integer year, Integer genreId);
 
     void deleteFilm(Integer filmId);
+
+    List<Film> searchFilm(SearchFilmRequest request);
 }

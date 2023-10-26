@@ -6,6 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.exeption.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
+import ru.yandex.practicum.filmorate.model.SearchFilmRequest;
 import ru.yandex.practicum.filmorate.service.film.FilmService;
 
 import javax.validation.Valid;
@@ -95,5 +96,16 @@ public class FilmController {
         service.deleteFilm(filmId);
         log.info("Фильм с id - " + filmId + " удален");
         return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/search")
+    public List<Film> searchFilm(@RequestParam String query, @RequestParam String by) {
+        SearchFilmRequest request = new SearchFilmRequest();
+        request.setQuery(query);
+        request.setBy(by);
+        List<Film> films = service.searchFilm(request);
+        log.info("Фильм успешно найден");
+        return films;
+
     }
 }

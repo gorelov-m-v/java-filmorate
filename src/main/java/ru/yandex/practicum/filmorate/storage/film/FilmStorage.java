@@ -26,4 +26,11 @@ public interface FilmStorage {
     List<Film> getUserFilms(User user);
 
     void deleteFilm(int filmId);
+
+    List<Film> getFilmByDirector(String by);
+
+    List<Film> getFilmByName(String query);
+
+    List<Film> getFilmsByParams(String query);
+
 }
