@@ -488,11 +488,10 @@ public class FilmDbStorage implements FilmStorage {
                 "JOIN directors AS d ON fd.director_id = d.director_id " +
                 "WHERE LOWER(d.director_name) LIKE :director";
 
-        MapSqlParameterSource namedParameters = new MapSqlParameterSource();
-        namedParameters.addValue("director", "%" + director.toLowerCase() + "%");
+        Map<String, Object> namedParameters = new HashMap<>();
+        namedParameters.put("director", "%" + director.toLowerCase() + "%");
 
-        List<Film> films = namedParameterJdbcTemplate.query(sql, namedParameters, (rs, rowNum) -> mapResultSetToFilm(rs));
-
+        List<Film> films = createFilmList(sql, namedParameters);
         loadFilmGenres(films);
         loadFilmDirector(films);
 
@@ -505,11 +504,10 @@ public class FilmDbStorage implements FilmStorage {
                 "LEFT JOIN mpa_ratings AS mr ON f.mpa_id = mr.mpa_id " +
                 "WHERE LOWER(f.name) LIKE :name";
 
-        MapSqlParameterSource namedParameters = new MapSqlParameterSource();
-        namedParameters.addValue("name", "%" + name.toLowerCase() + "%");
+        Map<String, Object> namedParameters = new HashMap<>();
+        namedParameters.put("name", "%" + name.toLowerCase() + "%");
 
-        List<Film> films = namedParameterJdbcTemplate.query(sql, namedParameters, (rs, rowNum) -> mapResultSetToFilm(rs));
-
+        List<Film> films = createFilmList(sql, namedParameters);
         loadFilmGenres(films);
         loadFilmDirector(films);
 
@@ -524,31 +522,15 @@ public class FilmDbStorage implements FilmStorage {
                 "LEFT JOIN directors AS d ON fd.director_id = d.director_id " +
                 "WHERE LOWER(f.name) LIKE :query OR LOWER(d.director_name) LIKE :query";
 
-        MapSqlParameterSource namedParameters = new MapSqlParameterSource();
-        namedParameters.addValue("query", "%" + query.toLowerCase() + "%");
-
-        List<Film> films = namedParameterJdbcTemplate.query(sql, namedParameters, (rs, rowNum) -> mapResultSetToFilm(rs));
-
+        Map<String, Object> namedParameters = new HashMap<>();
+        namedParameters.put("query", "%" + query.toLowerCase() + "%");
+        List<Film> films = createFilmList(sql, namedParameters);
         loadFilmGenres(films);
         loadFilmDirector(films);
 
         return films;
     }
 
-
-    private Film mapResultSetToFilm(ResultSet rs) throws SQLException {
-        Film film = new Film();
-        film.setId(rs.getInt("film_id"));
-        film.setName(rs.getString("name"));
-        film.setDescription(rs.getString("description"));
-        film.setReleaseDate(rs.getDate("release_date").toLocalDate());
-        film.setDuration(rs.getInt("duration"));
-        film.setLikes(rs.getInt("likes"));
-        film.setMpa(new RateMPA(rs.getInt("mpa_id"), rs.getString("mpa_name")));
-
-
-        return film;
-    }
 
 
 }
