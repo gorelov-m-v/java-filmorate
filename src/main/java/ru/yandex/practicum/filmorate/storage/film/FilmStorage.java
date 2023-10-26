@@ -29,4 +29,10 @@ public interface FilmStorage {
 
     void deleteFilm(int filmId);
 
+    List<Film> getFilmByDirector(String by);
+
+    List<Film> getFilmByName(String query);
+
+    List<Film> getFilmsByParams(String query);
+
 }

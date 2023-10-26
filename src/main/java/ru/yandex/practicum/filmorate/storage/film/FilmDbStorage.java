@@ -491,17 +491,62 @@ public class FilmDbStorage implements FilmStorage {
         params.put("userId", userId);
         params.put("friendId", friendId);
 
-        List<Film> commonFilms = namedParameterJdbcTemplate.query(sql, params, (rs, rowNum) -> {
-            Film film = new Film();
-            film.setId(rs.getInt("film_id"));
-            film.setName(rs.getString("name"));
-            film.setDescription(rs.getString("description"));
-            film.setReleaseDate(rs.getDate("release_date").toLocalDate());
-            film.setDuration(rs.getInt("duration"));
-            film.setLikes(rs.getInt("likes"));
-            film.setMpa(new RateMPA(rs.getInt("mpa_id"), rs.getString("mpa_name")));
-            return film;
-        });
+        List<Film> commonFilms = createFilmList(sql, params);
+        loadFilmGenres(commonFilms);
+        loadFilmDirector(commonFilms);
+
         return commonFilms;
+    }
+
+    public List<Film> getFilmByDirector(String director) {
+        String sql = "SELECT * " +
+                "FROM films AS f " +
+                "LEFT JOIN mpa_ratings AS mr ON f.mpa_id = mr.mpa_id " +
+                "JOIN films_directors AS fd ON f.film_id = fd.film_id " +
+                "JOIN directors AS d ON fd.director_id = d.director_id " +
+                "WHERE LOWER(d.director_name) LIKE :director";
+
+        Map<String, Object> namedParameters = new HashMap<>();
+        namedParameters.put("director", "%" + director + "%");
+
+        List<Film> films = createFilmList(sql, namedParameters);
+        loadFilmGenres(films);
+        loadFilmDirector(films);
+
+        return films;
+    }
+
+    public List<Film> getFilmByName(String name) {
+        String sql = "SELECT * " +
+                "FROM films AS f " +
+                "LEFT JOIN mpa_ratings AS mr ON f.mpa_id = mr.mpa_id " +
+                "WHERE LOWER(f.name) LIKE :name";
+
+        Map<String, Object> namedParameters = new HashMap<>();
+        namedParameters.put("name", "%" + name + "%");
+
+        List<Film> films = createFilmList(sql, namedParameters);
+        loadFilmGenres(films);
+        loadFilmDirector(films);
+
+        return films;
+    }
+
+
+    public List<Film> getFilmsByParams(String query) {
+        String sql = "SELECT * " +
+                "FROM films AS f " +
+                "LEFT JOIN mpa_ratings AS mr ON f.mpa_id = mr.mpa_id " +
+                "LEFT JOIN films_directors AS fd ON f.film_id = fd.film_id " +
+                "LEFT JOIN directors AS d ON fd.director_id = d.director_id " +
+                "WHERE LOWER(f.name) LIKE :query OR LOWER(d.director_name) LIKE :query";
+
+        Map<String, Object> namedParameters = new HashMap<>();
+        namedParameters.put("query", "%" + query + "%");
+        List<Film> films = createFilmList(sql, namedParameters);
+        loadFilmGenres(films);
+        loadFilmDirector(films);
+
+        return films;
     }
 }
