@@ -7,10 +7,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.DirtiesContext;
+import ru.yandex.practicum.filmorate.exeption.NotFoundException;
 import ru.yandex.practicum.filmorate.model.*;
 import ru.yandex.practicum.filmorate.storage.director.DirectorStorage;
 import ru.yandex.practicum.filmorate.storage.film.FilmDbStorage;
-import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.user.UserDbStorage;
 
 import java.time.LocalDate;
@@ -126,5 +126,13 @@ public class UserDbTest {
         List<Film> films = userStorage.getUserRecommendations(2);
 
         assertEquals(films.get(0).getId(), film.getId());
+    }
+
+    public void shouldDeleteUser() {
+        User user = userStorage.getUserById(1).orElseThrow();
+        userStorage.deleteUser(user);
+
+        // Убеждаемся, что пользователь удален
+        assertThrows(NotFoundException.class, () -> userStorage.getUserById(1).orElseThrow());
     }
 }
