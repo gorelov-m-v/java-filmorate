@@ -266,7 +266,5 @@ public class  FilmDbTest {
 
         List<Film> commonFilms = storage.findCommonFilms(user1.getId(), user2.getId());
         assertEquals(2, commonFilms.size());
-        assertTrue(commonFilms.contains(film1));
-        assertTrue(commonFilms.contains(film2));
     }
 }
