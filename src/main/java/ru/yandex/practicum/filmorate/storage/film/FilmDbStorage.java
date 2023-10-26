@@ -520,8 +520,8 @@ public class FilmDbStorage implements FilmStorage {
         String sql = "SELECT * " +
                 "FROM films AS f " +
                 "LEFT JOIN mpa_ratings AS mr ON f.mpa_id = mr.mpa_id " +
-                "JOIN films_directors AS fd ON f.film_id = fd.film_id " +
-                "JOIN directors AS d ON fd.director_id = d.director_id " +
+                "LEFT JOIN films_directors AS fd ON f.film_id = fd.film_id " +
+                "LEFT JOIN directors AS d ON fd.director_id = d.director_id " +
                 "WHERE LOWER(f.name) LIKE :query OR LOWER(d.director_name) LIKE :query";
 
         MapSqlParameterSource namedParameters = new MapSqlParameterSource();
@@ -549,8 +549,6 @@ public class FilmDbStorage implements FilmStorage {
 
         return film;
     }
-
-
 
 
 }
