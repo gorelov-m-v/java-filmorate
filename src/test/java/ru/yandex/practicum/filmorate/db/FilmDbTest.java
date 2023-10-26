@@ -184,6 +184,7 @@ public class  FilmDbTest {
                 .releaseDate(LocalDate.of(2001, 1, 1))
                 .mpa(new RateMPA(2, "PG"))
                 .genres(List.of(new Genre(2, "Драма")))
+                .directors(List.of(storageDir.getDirectorById(1).orElseThrow()))
                 .build();
         storage.createFilm(film2);
 
