@@ -54,6 +54,7 @@ public class ErrorHandler {
     @ExceptionHandler
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public ErrorResponse handleThrowable(final Throwable e) {
+        System.out.println(e.getClass());
         log.error("Error: ", e);
         StringWriter sw = new StringWriter();
         PrintWriter pw = new PrintWriter(sw);
