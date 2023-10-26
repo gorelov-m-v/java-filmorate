@@ -14,7 +14,6 @@ import ru.yandex.practicum.filmorate.exeption.NotFoundException;
 import ru.yandex.practicum.filmorate.model.*;
 
 import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.*;
 import java.util.function.Function;
@@ -489,7 +488,7 @@ public class FilmDbStorage implements FilmStorage {
                 "WHERE LOWER(d.director_name) LIKE :director";
 
         Map<String, Object> namedParameters = new HashMap<>();
-        namedParameters.put("director", "%" + director.toLowerCase() + "%");
+        namedParameters.put("director", "%" + director + "%");
 
         List<Film> films = createFilmList(sql, namedParameters);
         loadFilmGenres(films);
@@ -505,7 +504,7 @@ public class FilmDbStorage implements FilmStorage {
                 "WHERE LOWER(f.name) LIKE :name";
 
         Map<String, Object> namedParameters = new HashMap<>();
-        namedParameters.put("name", "%" + name.toLowerCase() + "%");
+        namedParameters.put("name", "%" + name + "%");
 
         List<Film> films = createFilmList(sql, namedParameters);
         loadFilmGenres(films);
@@ -523,7 +522,7 @@ public class FilmDbStorage implements FilmStorage {
                 "WHERE LOWER(f.name) LIKE :query OR LOWER(d.director_name) LIKE :query";
 
         Map<String, Object> namedParameters = new HashMap<>();
-        namedParameters.put("query", "%" + query.toLowerCase() + "%");
+        namedParameters.put("query", "%" + query + "%");
         List<Film> films = createFilmList(sql, namedParameters);
         loadFilmGenres(films);
         loadFilmDirector(films);
