@@ -111,21 +111,7 @@ public class FilmDbStorage implements FilmStorage {
                 "FROM films AS f " +
                 "LEFT JOIN mpa_ratings AS mr ON f.mpa_id = mr.mpa_id";
 
-        return namedParameterJdbcTemplate.query(sql, rs -> {
-            List<Film> list = new ArrayList<>();
-            while (rs.next()) {
-                Film film = new Film();
-                film.setId(rs.getInt("film_id"));
-                film.setName(rs.getString("name"));
-                film.setDescription(rs.getString("description"));
-                film.setReleaseDate(rs.getDate("release_date").toLocalDate());
-                film.setDuration(rs.getInt("duration"));
-                film.setLikes(rs.getInt("likes"));
-                film.setMpa(new RateMPA(rs.getInt("mpa_id"), rs.getString("mpa_name")));
-                list.add(film);
-            }
-            return list;
-        });
+        return createFilmList(sql);
     }
 
 
@@ -230,6 +216,23 @@ public class FilmDbStorage implements FilmStorage {
         }
     }
 
+    private List<Film> getPopular(String sql, Integer limit, Integer year, Integer genreId) {
+        try {
+            Map<String, Object> params = new HashMap<>();
+            params.put("year", year);
+            params.put("genreId", genreId);
+            params.put("limit", limit);
+
+            List<Film> films = createFilmList(sql, params);
+            loadFilmGenres(films);
+            loadFilmDirector(films);
+            return films;
+
+        } catch (EmptyResultDataAccessException e) {
+            return Collections.emptyList();
+        }
+    }
+
 
     @Override
     public Film createFilm(Film film) {
@@ -291,6 +294,43 @@ public class FilmDbStorage implements FilmStorage {
         loadFilmDirector(films);
 
         return films;
+    }
+
+    @Override
+    public List<Film> getMostPopular(Integer limit, Integer year, Integer genreId) {
+        String sql;
+        if (year != null && genreId == null) {
+            sql = "SELECT *" +
+                    "FROM films AS f " +
+                    "LEFT JOIN mpa_ratings AS mr ON f.mpa_id = mr.mpa_id " +
+                    "WHERE YEAR(release_date) = :year " +
+                    "ORDER BY likes DESC " +
+                    "LIMIT :limit";
+        } else if (year == null && genreId != null) {
+            sql = "SELECT * " +
+                    "FROM films AS f " +
+                    "JOIN film_genre AS fg ON f.film_id = fg.film_id " +
+                    "LEFT JOIN mpa_ratings AS mr ON f.mpa_id = mr.mpa_id " +
+                    "WHERE fg.genre_id = :genreId " +
+                    "ORDER BY likes DESC " +
+                    "LIMIT :limit";
+        } else if (year != null) {
+            sql = "SELECT * " +
+                    "FROM films AS f " +
+                    "JOIN film_genre AS fg ON f.film_id = fg.film_id " +
+                    "LEFT JOIN mpa_ratings AS mr ON f.mpa_id = mr.mpa_id " +
+                    "WHERE fg.genre_id = :genreId " +
+                    "AND YEAR(release_date) = :year " +
+                    "ORDER BY likes DESC " +
+                    "LIMIT :limit";
+        } else {
+            sql = "SELECT * " +
+                    "FROM films AS f " +
+                    "LEFT JOIN mpa_ratings AS mr ON f.mpa_id = mr.mpa_id " +
+                    "ORDER BY likes DESC " +
+                    "LIMIT :limit";
+        }
+        return getPopular(sql, limit, year, genreId);
     }
 
 
@@ -393,28 +433,6 @@ public class FilmDbStorage implements FilmStorage {
     }
 
     @Override
-    public List<Film> findCommonFilms(Integer userId, Integer friendId) {
-        String sql = "SELECT f.* FROM likes AS l1 " +
-                "JOIN likes AS l2 ON l1.film_id = l2.film_id " +
-                "JOIN films AS f ON l1.film_id = f.film_id " +
-                "WHERE l1.user_id = :userId AND l2.user_id = :friendId";
-
-        Map<String, Object> params = new HashMap<>();
-        params.put("userId", userId);
-        params.put("friendId", friendId);
-
-        List<Film> commonFilms = namedParameterJdbcTemplate.query(sql, params, (rs, rowNum) -> {
-            Film film = new Film();
-            film.setId(rs.getInt("film_id"));
-            film.setName(rs.getString("name"));
-            film.setDescription(rs.getString("description"));
-
-            return film;
-        });
-        return commonFilms;
-    }
-
-    @Override
     public void deleteFilm(int filmId) {
 
         String deleteFilmSql = "DELETE FROM films WHERE film_id = :filmId";
@@ -461,25 +479,25 @@ public class FilmDbStorage implements FilmStorage {
         });
     }
 
-    public List<Film> getCommonFilms(long userId1, long userId2) {
-
-        String sql = "SELECT f.* " +
-                "FROM likes AS l1 " +
+    @Override
+    public List<Film> findCommonFilms(Integer userId, Integer friendId) {
+        String sql = "SELECT f.* FROM likes AS l1 " +
                 "JOIN likes AS l2 ON l1.film_id = l2.film_id " +
                 "JOIN films AS f ON l1.film_id = f.film_id " +
-                "WHERE l1.user_id = :userId1 " +
-                "AND l2.user_id = :userId2";
+                "WHERE l1.user_id = :userId AND l2.user_id = :friendId";
 
         Map<String, Object> params = new HashMap<>();
-        params.put("userId1", userId1);
-        params.put("userId2", userId2);
+        params.put("userId", userId);
+        params.put("friendId", friendId);
 
-        return namedParameterJdbcTemplate.query(sql, params, (rs, rowNum) -> {
+        List<Film> commonFilms = namedParameterJdbcTemplate.query(sql, params, (rs, rowNum) -> {
             Film film = new Film();
             film.setId(rs.getInt("film_id"));
             film.setName(rs.getString("name"));
+            film.setDescription(rs.getString("description"));
 
             return film;
         });
+        return commonFilms;
     }
 }

@@ -18,8 +18,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 @AutoConfigureTestDatabase
@@ -167,6 +166,78 @@ public class  FilmDbTest {
     }
 
     @Test
+    public void testGetMostPopularFilmsByYear() {
+        Film film = new Film(1, "new", "new",
+                LocalDate.of(1999, 1, 1), 1, 0,
+                new RateMPA(3, "PG-13"), List.of(new Genre(3, "Мультфильм")), new ArrayList<>());
+        storage.createFilm(film);
+
+        List<Film> films = storage.getMostPopular(1, 2000, null);
+        assertEquals(1, films.size());
+        assertEquals(2000, films.get(0).getReleaseDate().getYear());
+    }
+
+    @Test
+    public void testGetMostPopularFilmsByGenre() {
+        Film film = new Film(1, "new", "new",
+                LocalDate.of(1999, 1, 1), 1, 0,
+                new RateMPA(3, "PG-13"), List.of(new Genre(3, "Мультфильм")), new ArrayList<>());
+        storage.createFilm(film);
+
+        List<Film> films = storage.getMostPopular(1, null, 3);
+        assertEquals(1, films.size());
+        assertEquals(1999, films.get(0).getReleaseDate().getYear());
+        assertEquals(3, films.get(0).getGenres().get(0).getId());
+    }
+
+    @Test
+    public void testGetMostPopularFilmsByGenreAndYear() {
+        Film film = new Film(1, "new", "new",
+                LocalDate.of(1999, 1, 1), 1, 0,
+                new RateMPA(3, "PG-13"), List.of(new Genre(3, "Мультфильм")), new ArrayList<>());
+        storage.createFilm(film);
+
+        List<Film> films = storage.getMostPopular(1, 1999, 3);
+        assertEquals(1, films.size());
+        assertEquals(1999, films.get(0).getReleaseDate().getYear());
+        assertEquals(3, films.get(0).getGenres().get(0).getId());
+    }
+
+    @Test
+    public void testGetMostPopularFilms() {
+        Film film = new Film(1, "new", "new",
+                LocalDate.of(1999, 1, 1), 1, 0,
+                new RateMPA(3, "PG-13"), List.of(new Genre(3, "Мультфильм")), new ArrayList<>());
+        storage.createFilm(film);
+
+        List<Film> films = storage.getMostPopular(1, null, null);
+        assertEquals(1, films.size());
+    }
+
+    @Test
+    public void shouldDeleteFilm() {
+        int filmId = 1;
+        storage.deleteFilm(filmId);
+
+        Optional<Film> deletedFilm = storage.getFilmById(filmId);
+        assertFalse(deletedFilm.isPresent());
+    }
+
+    private Film createFilm(String name) {
+        RateMPA rateMPA = new RateMPA(1, null);
+        Genre genre = new Genre(1, null);
+        Film film = Film.builder()
+                .name(name)
+                .description("Описание")
+                .duration(90)
+                .releaseDate(LocalDate.now())
+                .mpa(rateMPA)
+                .genres(List.of(genre))
+                .build();
+        return storage.createFilm(film);
+    }
+
+    @Test
     public void testFindCommonFilms() {
         User user1 = userStorage.getUserById(1).orElseThrow();
         User user2 = userStorage.createUser(User.builder()
@@ -197,56 +268,5 @@ public class  FilmDbTest {
         assertEquals(2, commonFilms.size());
         assertTrue(commonFilms.contains(film1));
         assertTrue(commonFilms.contains(film2));
-    }
-
-    @Test
-    public void testGetCommonFilms() {
-
-        User user1 = User.builder()
-                .name("Пользователь 1")
-                .login("user1")
-                .email("user1@example.com")
-                .birthday(LocalDate.of(1990, 1, 1))
-                .build();
-        User user2 = User.builder()
-                .name("Пользователь 2")
-                .login("user2")
-                .email("user2@example.com")
-                .birthday(LocalDate.of(1995, 3, 15))
-                .build();
-
-        user1 = userStorage.createUser(user1);
-        user2 = userStorage.createUser(user2);
-
-
-        Film film1 = createFilm("Фильм 1");
-        Film film2 = createFilm("Фильм 2");
-        Film film3 = createFilm("Фильм 3");
-
-        storage.addLike(user1, film1);
-        storage.addLike(user1, film2);
-        storage.addLike(user2, film2);
-        storage.addLike(user2, film3);
-
-
-        List<Film> commonFilms = storage.getCommonFilms(user1.getId(), user2.getId());
-
-
-        assertEquals(1, commonFilms.size());
-        assertEquals("Фильм 2", commonFilms.get(0).getName());
-    }
-
-    private Film createFilm(String name) {
-        RateMPA rateMPA = new RateMPA(1, null);
-        Genre genre = new Genre(1, null);
-        Film film = Film.builder()
-                .name(name)
-                .description("Описание")
-                .duration(90)
-                .releaseDate(LocalDate.now())
-                .mpa(rateMPA)
-                .genres(List.of(genre))
-                .build();
-        return storage.createFilm(film);
     }
 }

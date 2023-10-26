@@ -8,8 +8,8 @@ import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.director.DirectorStorage;
 import ru.yandex.practicum.filmorate.storage.film.FilmStorage;
 import ru.yandex.practicum.filmorate.storage.user.UserStorage;
+
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -75,15 +75,19 @@ public class FilmServiceImpl implements FilmService {
 
 
     @Override
-    public List<Film> getPopular(Integer limit) {
-        return storage.getFilms().stream()
-                .sorted((s, s1) -> Integer.compare(s1.getLikes(), s.getLikes()))
-                .limit(limit)
-                .collect(Collectors.toList());
+    public List<Film> getPopular(Integer limit, Integer year, Integer genreId) {
+        return storage.getMostPopular(limit, year, genreId);
+    }
+
+    @Override
+    public void deleteFilm(Integer filmId) {
+        Film film = getStorageFilmId(filmId);
+        storage.deleteFilm(filmId);
     }
 
     @Override
     public List<Film> findCommonFilms(Integer userId, Integer friendId) {
         return storage.findCommonFilms(userId, friendId);
     }
+
 }

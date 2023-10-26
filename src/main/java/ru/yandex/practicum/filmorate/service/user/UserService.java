@@ -23,4 +23,6 @@ public interface UserService {
     List<User> getSameFriends(Integer userId, Integer friendId);
 
     List<Film> getUserRecommendations(Integer id);
+
+    void deleteUser(Integer userId);
 }

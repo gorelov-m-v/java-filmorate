@@ -80,9 +80,11 @@ public class FilmController {
 
 
     @GetMapping("/popular")
-    public List<Film> getPopular(@RequestParam(defaultValue = "10") Integer count) {
+    public List<Film> getPopular(@RequestParam(defaultValue = "10") Integer count,
+                                 @RequestParam(required = false) Integer year,
+                                 @RequestParam(required = false) Integer genreId) {
         log.info("Запрос на получение списка популярных фильмов");
-        List<Film> films = service.getPopular(count);
+        List<Film> films = service.getPopular(count, year, genreId);
         log.info("Список популярных фильмов отправлен");
         return films;
     }
@@ -95,6 +97,15 @@ public class FilmController {
         List<Film> commonFilms = service.findCommonFilms(userId, friendId);
         log.info("Запрос на получение общих фильмов для пользователей с userId - " + userId + " и friendId - " + friendId);
         return ResponseEntity.ok(commonFilms);
+    }
+
+
+    @DeleteMapping("/{filmId}")
+    public ResponseEntity<?> deleteFilm(@PathVariable int filmId) {
+        log.info("Запрос на удаление фильма с id - " + filmId);
+        service.deleteFilm(filmId);
+        log.info("Фильм с id - " + filmId + " удален");
+        return ResponseEntity.ok().build();
     }
 
 }
