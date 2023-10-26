@@ -33,7 +33,7 @@ public class ReviewDbStorage implements ReviewStorage {
 
     @Override
     public Review createReview(Review review) {
-        System.out.println(review);
+
         String sql = "insert into reviews " +
                 "(content, is_positive, film_id, user_id, useful) " +
                 "values(:content, :is_positive, :film_id, :user_id, :useful)";

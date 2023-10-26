@@ -12,11 +12,10 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ReviewServiceImpl implements ReviewService {
 
-    ReviewStorage storage;
+    private final ReviewStorage storage;
 
     @Override
     public Review createReview(Review review) {
-        System.out.println(review);
         return storage.createReview(review);
     }
 

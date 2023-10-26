@@ -20,8 +20,7 @@ public class ReviewController {
 
     @PostMapping
     public Review createReview(@Valid @RequestBody Review review) {
-        log.info("Запрос на добавление нового отзыва");
-        System.out.println(review);
+        log.info("Запрос на добавление нового отзыва: " + review);
         Review reviewNew = service.createReview(review);
         log.info("Добавлен новый фильм");
         return reviewNew;
@@ -29,7 +28,7 @@ public class ReviewController {
 
     @PutMapping
     public Review updateReview(@Valid @RequestBody Review review) {
-        log.info("Запрос на обновление отзыва");
+        log.info("Запрос на обновление отзыва: " + review);
         if (review.getReviewId() == null) throw new ValidationException("Значение id не может равняться null");
         Review reviewNew = service.updateReview(review);
         log.info("отзыв обновлен");
