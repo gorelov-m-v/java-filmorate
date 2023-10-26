@@ -495,7 +495,10 @@ public class FilmDbStorage implements FilmStorage {
             film.setId(rs.getInt("film_id"));
             film.setName(rs.getString("name"));
             film.setDescription(rs.getString("description"));
-
+            film.setReleaseDate(rs.getDate("release_date").toLocalDate());
+            film.setDuration(rs.getInt("duration"));
+            film.setLikes(rs.getInt("likes"));
+            film.setMpa(new RateMPA(rs.getInt("mpa_id"), rs.getString("mpa_name")));
             return film;
         });
         return commonFilms;
