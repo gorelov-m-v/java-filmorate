@@ -20,7 +20,7 @@ import java.util.Optional;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @SpringBootTest
 @AutoConfigureTestDatabase
@@ -140,12 +140,35 @@ public class  FilmDbTest {
     }
 
     @Test
-    public void shouldDeleteFilm() {
-        int filmId = 1;
-        storage.deleteFilm(filmId);
+    public void testFindCommonFilms() {
+        User user1 = userStorage.getUserById(1).orElseThrow();
+        User user2 = userStorage.createUser(User.builder()
+                .name("friend")
+                .login("friend_login")
+                .email("friend@example.com")
+                .birthday(LocalDate.of(2000, 1, 1))
+                .build());
 
-        Optional<Film> deletedFilm = storage.getFilmById(filmId);
-        assertFalse(deletedFilm.isPresent());
+        Film film1 = storage.getFilmById(1).orElseThrow();
+        Film film2 = Film.builder()
+                .name("film2")
+                .description("desc2")
+                .duration(2)
+                .releaseDate(LocalDate.of(2001, 1, 1))
+                .mpa(new RateMPA(2, "PG"))
+                .genres(List.of(new Genre(2, "Драма")))
+                .build();
+        storage.createFilm(film2);
+
+        storage.addLike(user1, film1);
+        storage.addLike(user1, film2);
+        storage.addLike(user2, film1);
+        storage.addLike(user2, film2);
+
+        List<Film> commonFilms = storage.findCommonFilms(user1.getId(), user2.getId());
+        assertEquals(2, commonFilms.size());
+        assertTrue(commonFilms.contains(film1));
+        assertTrue(commonFilms.contains(film2));
     }
 
     @Test

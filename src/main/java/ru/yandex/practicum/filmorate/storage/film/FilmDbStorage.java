@@ -278,22 +278,25 @@ public class FilmDbStorage implements FilmStorage {
     }
 
     @Override
-    public List<Film> getUserLikedFilms(Integer userId) {
-        String sql = "SELECT f.* " +
-                "FROM likes AS l " +
-                "JOIN films AS f ON l.film_id = f.film_id " +
-                "WHERE l.user_id = :user_id";
+    public List<Film> findCommonFilms(Integer userId, Integer friendId) {
+        String sql = "SELECT f.* FROM likes AS l1 " +
+                "JOIN likes AS l2 ON l1.film_id = l2.film_id " +
+                "JOIN films AS f ON l1.film_id = f.film_id " +
+                "WHERE l1.user_id = :userId AND l2.user_id = :friendId";
 
         Map<String, Object> params = new HashMap<>();
-        params.put("user_id", userId);
+        params.put("userId", userId);
+        params.put("friendId", friendId);
 
-        return namedParameterJdbcTemplate.query(sql, params, (rs, rowNum) -> {
+        List<Film> commonFilms = namedParameterJdbcTemplate.query(sql, params, (rs, rowNum) -> {
             Film film = new Film();
             film.setId(rs.getInt("film_id"));
             film.setName(rs.getString("name"));
+            film.setDescription(rs.getString("description"));
 
             return film;
         });
+        return commonFilms;
     }
 
     @Override
