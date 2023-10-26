@@ -479,6 +479,25 @@ public class FilmDbStorage implements FilmStorage {
         });
     }
 
+    @Override
+    public List<Film> findCommonFilms(Integer userId, Integer friendId) {
+        String sql = "SELECT * FROM likes AS l1 " +
+                "JOIN likes AS l2 ON l1.film_id = l2.film_id " +
+                "JOIN films AS f ON l1.film_id = f.film_id " +
+                "LEFT JOIN mpa_ratings AS m ON f.mpa_id = m.mpa_id " +
+                "WHERE l1.user_id = :userId AND l2.user_id = :friendId";
+
+        Map<String, Object> params = new HashMap<>();
+        params.put("userId", userId);
+        params.put("friendId", friendId);
+
+        List<Film> commonFilms = createFilmList(sql, params);
+        loadFilmGenres(commonFilms);
+        loadFilmDirector(commonFilms);
+
+        return commonFilms;
+    }
+
     public List<Film> getFilmByDirector(String director) {
         String sql = "SELECT * " +
                 "FROM films AS f " +
@@ -513,6 +532,7 @@ public class FilmDbStorage implements FilmStorage {
         return films;
     }
 
+
     public List<Film> getFilmsByParams(String query) {
         String sql = "SELECT * " +
                 "FROM films AS f " +
@@ -529,11 +549,4 @@ public class FilmDbStorage implements FilmStorage {
 
         return films;
     }
-
-
 }
-
-
-
-
-

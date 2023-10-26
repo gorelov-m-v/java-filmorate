@@ -93,13 +93,6 @@ public class UserController {
         return friends;
     }
 
-    @DeleteMapping("{userId}")
-    public void deleteUser(@PathVariable Integer userId) {
-        log.info("Запрос на удаление пользователя с id - " + userId);
-        service.deleteUser(userId);
-        log.info("Пользователь с id - " + userId + " удален");
-    }
-
     @GetMapping("/{id}/recommendations")
     public List<Film> getUserRecommendations(@PathVariable Integer id) {
         log.info("Запрос на получение списка рекоммендованных фильмов для пользователя - " + id);
@@ -107,4 +100,12 @@ public class UserController {
         log.info("Отправлен список рекоммендованных фильмов для пользователя - " + id);
         return friends;
     }
+
+    @DeleteMapping("/{userId}")
+    public void deleteUser(@PathVariable Integer userId) {
+        log.info("Запрос на удаление пользователя с id - " + userId);
+        service.deleteUser(userId);
+        log.info("Пользователь с id - " + userId + " удален");
+    }
+
 }

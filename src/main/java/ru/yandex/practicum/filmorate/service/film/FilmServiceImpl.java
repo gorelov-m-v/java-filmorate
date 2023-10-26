@@ -11,7 +11,10 @@ import ru.yandex.practicum.filmorate.storage.film.FilmStorage;
 import ru.yandex.practicum.filmorate.storage.user.UserStorage;
 
 import javax.validation.Valid;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
@@ -100,5 +103,10 @@ public class FilmServiceImpl implements FilmService {
         } else {
             return storage.getFilmByName(query);
         }
+    }
+
+    @Override
+    public List<Film> findCommonFilms(Integer userId, Integer friendId) {
+        return storage.findCommonFilms(userId, friendId);
     }
 }

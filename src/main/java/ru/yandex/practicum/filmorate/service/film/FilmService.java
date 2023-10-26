@@ -25,5 +25,7 @@ public interface FilmService {
 
     void deleteFilm(Integer filmId);
 
+    List<Film> findCommonFilms(Integer userId, Integer friendId);
+
     List<Film> searchFilm(SearchFilmRequest request);
 }
