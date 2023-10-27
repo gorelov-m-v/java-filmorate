@@ -8,11 +8,12 @@ import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Repository;
 import ru.yandex.practicum.filmorate.model.Director;
 
 import java.util.*;
 
-@Component
+@Repository
 @RequiredArgsConstructor
 public class DirectorDbStorage implements DirectorStorage {
     private final NamedParameterJdbcTemplate namedParameterJdbcTemplate;
