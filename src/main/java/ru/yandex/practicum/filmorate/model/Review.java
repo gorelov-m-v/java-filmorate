@@ -14,12 +14,14 @@ import javax.validation.constraints.NotNull;
 @Slf4j
 @ToString
 public class Review {
-    private Integer reviewId = 0;
+    private Integer reviewId;
     @NotEmpty(message = "текст отзыва не может быть пустым")
     private String content;
     @NotNull(message = "значение isPositive у отзыва не может быть null")
     private Boolean isPositive;
+    @NotNull
     private Integer filmId;
+    @NotNull
     private Integer userId;
     private Integer useful = 0;
 }

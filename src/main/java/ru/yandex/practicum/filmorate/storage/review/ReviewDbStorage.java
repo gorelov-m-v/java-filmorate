@@ -11,7 +11,10 @@ import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.exeption.NotFoundException;
 import ru.yandex.practicum.filmorate.model.Review;
+import ru.yandex.practicum.filmorate.storage.film.FilmStorage;
+import ru.yandex.practicum.filmorate.storage.user.UserStorage;
 
+import java.io.File;
 import java.util.*;
 
 @Slf4j
@@ -19,6 +22,8 @@ import java.util.*;
 @RequiredArgsConstructor
 public class ReviewDbStorage implements ReviewStorage {
     private final NamedParameterJdbcTemplate namedParameterJdbcTemplate;
+    private final FilmStorage filmStorage;
+    private final UserStorage userStorage;
 
     private Map<String, Object> getParams(Review review) {
         Map<String, Object> parameters = new HashMap<>();
@@ -33,6 +38,12 @@ public class ReviewDbStorage implements ReviewStorage {
 
     @Override
     public Review createReview(Review review) {
+
+        filmStorage.getFilmById(review.getFilmId())
+                .orElseThrow(() -> new NotFoundException("Фильм с id " + review.getFilmId() + " не найден"));
+
+        userStorage.getUserById(review.getUserId())
+                .orElseThrow(() -> new NotFoundException("Фильм с id " + review.getUserId() + " не найден"));
 
         String sql = "insert into reviews " +
                 "(content, is_positive, film_id, user_id, useful) " +
