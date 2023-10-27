@@ -68,8 +68,9 @@ public class FilmServiceImpl implements FilmService {
     public void addLike(Integer userId, Integer filmId) {
         User user = userStorage.getUserById(userId).orElseThrow(() -> new NotFoundException("Пользователь не найден"));
         Film film = getStorageFilmId(filmId);
-        feedStorage.addEvent(userId, "LIKE", "ADD", filmId);
+
         storage.addLike(user, film);
+        feedStorage.addEvent(userId, "LIKE", "ADD", filmId);
     }
 
 
@@ -78,8 +79,9 @@ public class FilmServiceImpl implements FilmService {
         User user = userStorage.getUserById(userId)
                 .orElseThrow(() -> new NotFoundException("Пользователь c id - " + userId + " не найден"));
         Film film = getStorageFilmId(filmId);
-        feedStorage.addEvent(userId, "LIKE", "REMOVE", filmId);
+
         storage.removeLike(user, film);
+        feedStorage.addEvent(userId, "LIKE", "REMOVE", filmId);
     }
 
 

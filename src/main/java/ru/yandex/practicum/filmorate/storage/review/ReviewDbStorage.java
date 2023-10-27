@@ -60,8 +60,6 @@ public class ReviewDbStorage implements ReviewStorage {
         namedParameterJdbcTemplate.update(sql, namedParameters, keyHolder);
         review.setReviewId((Integer) keyHolder.getKey());
 
-        feedStorage.addEvent(review.getUserId(), "REVIEW", "ADD", review.getReviewId());
-
         return review;
     }
 
@@ -84,8 +82,6 @@ public class ReviewDbStorage implements ReviewStorage {
                             review.getFilmId(),
                             review.getUserId()));
         }
-
-        feedStorage.addEvent(review.getUserId(), "REVIEW", "UPDATE", review.getReviewId());
 
         return getById(review.getReviewId());
     }
@@ -138,9 +134,6 @@ public class ReviewDbStorage implements ReviewStorage {
 
         Map<String, Object> params = new HashMap<>();
         params.put("review_id", id);
-
-        Review review = getById(id);
-        feedStorage.addEvent(review.getUserId(), "REVIEW", "REMOVE", review.getReviewId());
 
         namedParameterJdbcTemplate.update(deleteReviewSql, params);
     }
