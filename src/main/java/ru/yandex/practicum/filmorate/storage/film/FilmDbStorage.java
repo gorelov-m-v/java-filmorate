@@ -37,7 +37,6 @@ public class FilmDbStorage implements FilmStorage {
         return parameters;
     }
 
-
     private void saveFilmGenres(Film film) {
         String sql = "DELETE " +
                 "FROM film_genre " +
@@ -70,7 +69,6 @@ public class FilmDbStorage implements FilmStorage {
             }
         });
     }
-
 
     private void saveFilmDirectors(Film film) {
         String sql = "DELETE " +
@@ -105,7 +103,6 @@ public class FilmDbStorage implements FilmStorage {
         });
     }
 
-
     private List<Film> getAllFilms() {
         String sql = "SELECT *" +
                 "FROM films AS f " +
@@ -113,7 +110,6 @@ public class FilmDbStorage implements FilmStorage {
 
         return createFilmList(sql);
     }
-
 
     public void loadFilmGenres(List<Film> films) {
         if (films.isEmpty()) return;
@@ -233,7 +229,6 @@ public class FilmDbStorage implements FilmStorage {
         }
     }
 
-
     @Override
     public Film createFilm(Film film) {
         String sql = "insert into films " +
@@ -254,7 +249,6 @@ public class FilmDbStorage implements FilmStorage {
         saveFilmDirectors(film);
         return film;
     }
-
 
     @Override
     public void updateFilm(Film film) {
@@ -285,7 +279,6 @@ public class FilmDbStorage implements FilmStorage {
                 throw new NotFoundException("Некорректный ввод");
         }
     }
-
 
     @Override
     public List<Film> getFilms() {
@@ -333,7 +326,6 @@ public class FilmDbStorage implements FilmStorage {
         return getPopular(sql, limit, year, genreId);
     }
 
-
     @Override
     public Optional<Film> getFilmById(int id) {
         try {
@@ -365,7 +357,6 @@ public class FilmDbStorage implements FilmStorage {
         }
     }
 
-
     @Override
     public void addLike(User user, Film film) {
         String sql = "MERGE " +
@@ -388,7 +379,6 @@ public class FilmDbStorage implements FilmStorage {
         namedParameterJdbcTemplate.update(sql, params);
     }
 
-
     @Override
     public void removeLike(User user, Film film) {
         String sql = "DELETE " +
@@ -407,7 +397,6 @@ public class FilmDbStorage implements FilmStorage {
 
         namedParameterJdbcTemplate.update(sql, params);
     }
-
 
     @Override
     public List<Film> getUserFilms(User user) {
@@ -532,7 +521,6 @@ public class FilmDbStorage implements FilmStorage {
 
         return films;
     }
-
 
     public List<Film> getFilmsByParams(String query) {
         String sql = "SELECT * " +

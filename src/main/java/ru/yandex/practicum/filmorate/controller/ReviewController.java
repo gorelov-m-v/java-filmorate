@@ -15,12 +15,12 @@ import java.util.List;
 @RequestMapping("/reviews")
 @RequiredArgsConstructor
 public class ReviewController {
-    private final ReviewService service;
+    private final ReviewService reviewService;
 
     @PostMapping
     public Review createReview(@Valid @RequestBody Review review) {
         log.info("Запрос на добавление нового отзыва: " + review);
-        Review reviewNew = service.createReview(review);
+        Review reviewNew = reviewService.createReview(review);
         log.info("Добавлен новый фильм");
         return reviewNew;
     }
@@ -29,7 +29,7 @@ public class ReviewController {
     public Review updateReview(@Valid @RequestBody Review review) {
         log.info("Запрос на обновление отзыва: " + review);
         if (review.getReviewId() == null) throw new ValidationException("Значение id не может равняться null");
-        Review reviewNew = service.updateReview(review);
+        Review reviewNew = reviewService.updateReview(review);
         log.info("отзыв обновлен");
         return reviewNew;
     }
@@ -37,7 +37,7 @@ public class ReviewController {
     @GetMapping("/{id}")
     public Review getReview(@PathVariable Integer id) {
         log.info("Запрос на получение отзыва с id - " + id);
-        Review review = service.getById(id);
+        Review review = reviewService.getById(id);
         log.info("Отзыв с id - " + id + " отправлен");
         return review;
     }
@@ -47,7 +47,7 @@ public class ReviewController {
                                    @RequestParam(name = "count", defaultValue = "10") Integer count) {
         log.info("Запрос на получение отзывов с параметрами запроса filmId = " + filmId +
                 ", count = " + count);
-        List<Review> reviews = service.getReviews(filmId, count);
+        List<Review> reviews = reviewService.getReviews(filmId, count);
         log.info("Отзывы отправлены");
         return reviews;
     }
@@ -55,7 +55,7 @@ public class ReviewController {
     @DeleteMapping("/{id}")
     public void deleteReview(@PathVariable Integer id) {
         log.info("Запрос на удаление отзыва с id - " + id);
-        service.deleteReview(id);
+        reviewService.deleteReview(id);
         log.info("Отзыв удален");
     }
 
@@ -63,7 +63,7 @@ public class ReviewController {
     public void addLike(@PathVariable Integer id, @PathVariable Integer userId) {
         log.info("Запрос на добавление лайка на отзыв с id - " + id
                 + ", от пользователя с id - " + userId);
-        service.addLike(id, userId);
+        reviewService.addLike(id, userId);
         log.info("Лайк добавлен");
     }
 
@@ -71,7 +71,7 @@ public class ReviewController {
     public void addDislike(@PathVariable Integer id, @PathVariable Integer userId) {
         log.info("Запрос на добавление дизлайка на отзыв с id - " + id
                 + ", от пользователя с id - " + userId);
-        service.addDislike(id, userId);
+        reviewService.addDislike(id, userId);
         log.info("Лайк добавлен");
     }
 
@@ -79,7 +79,7 @@ public class ReviewController {
     public void deleteLike(@PathVariable Integer id, @PathVariable Integer userId) {
         log.info("Запрос на удаление лайка на отзыв с id - " + id
                 + ", от пользователя с id - " + userId);
-        service.deleteLike(id, userId);
+        reviewService.deleteLike(id, userId);
         log.info("Лайк добавлен");
     }
 
@@ -87,8 +87,7 @@ public class ReviewController {
     public void deleteDislike(@PathVariable Integer id, @PathVariable Integer userId) {
         log.info("Запрос на добавление дизлайка на отзыв с id - " + id
                 + ", от пользователя с id - " + userId);
-        service.deleteDislike(id, userId);
+        reviewService.deleteDislike(id, userId);
         log.info("Лайк добавлен");
     }
-
 }

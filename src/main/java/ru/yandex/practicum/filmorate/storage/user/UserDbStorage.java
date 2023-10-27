@@ -17,7 +17,6 @@ import java.util.*;
 @Component
 @RequiredArgsConstructor
 public class UserDbStorage implements UserStorage {
-
     private final NamedParameterJdbcTemplate namedParameterJdbcTemplate;
     private final FilmDbStorage filmDbStorage;
 
@@ -31,7 +30,6 @@ public class UserDbStorage implements UserStorage {
         return parameters;
     }
 
-
     @Override
     public User createUser(User user) {
         if (user.getName().isEmpty()) {
@@ -44,7 +42,6 @@ public class UserDbStorage implements UserStorage {
 
         return user;
     }
-
 
     @Override
     public void updateUser(User user) {
@@ -63,7 +60,6 @@ public class UserDbStorage implements UserStorage {
         }
     }
 
-
     @Override
     public List<User> getUsers() {
         String sql = "SELECT * " +
@@ -78,7 +74,6 @@ public class UserDbStorage implements UserStorage {
 
         ));
     }
-
 
     @Override
     public Optional<User> getUserById(int id) {
@@ -102,7 +97,6 @@ public class UserDbStorage implements UserStorage {
         }
     }
 
-
     @Override
     public void addFriend(User user, User friend) {
         try {
@@ -124,7 +118,6 @@ public class UserDbStorage implements UserStorage {
         }
     }
 
-
     @Override
     public void removeFriend(User user, User friend) {
         try {
@@ -143,7 +136,6 @@ public class UserDbStorage implements UserStorage {
             throw new NotFoundException("Неизвестный пользователь.");
         }
     }
-
 
     @Override
     public List<User> getFriends(User user) {

@@ -14,83 +14,74 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
-    private final UserStorage storage;
+    private final UserStorage userStorage;
     private final FeedStorage feedStorage;
-
 
     @Override
     public User createUser(User user) {
-        return storage.createUser(user);
+        return userStorage.createUser(user);
     }
-
 
     @Override
     public User updateUser(User user) {
         getCheckUserThrow(user.getId());
-        storage.updateUser(user);
+        userStorage.updateUser(user);
         return user;
     }
 
-
     @Override
     public List<User> getUsers() {
-        return storage.getUsers();
+        return userStorage.getUsers();
     }
-
 
     @Override
     public User getUserById(Integer id) {
         return getCheckUserThrow(id);
     }
 
-
     private User getCheckUserThrow(Integer id) {
-        return storage.getUserById(id).orElseThrow(() -> new NotFoundException("Пользователь с id " + id + " не найден"));
+        return userStorage.getUserById(id).orElseThrow(() -> new NotFoundException("Пользователь с id " + id + " не найден"));
     }
-
 
     @Override
     public void addFriend(Integer userId, Integer friendId) {
         User user = getCheckUserThrow(userId);
         User friend = getCheckUserThrow(friendId);
         feedStorage.addEvent(userId, "FRIEND", "ADD", friendId);
-        storage.addFriend(user, friend);
+        userStorage.addFriend(user, friend);
     }
-
 
     @Override
     public void removeFriend(Integer userId, Integer friendId) {
         User user = getCheckUserThrow(userId);
         User friend = getCheckUserThrow(friendId);
         feedStorage.addEvent(userId, "FRIEND", "REMOVE", friendId);
-        storage.removeFriend(user, friend);
+        userStorage.removeFriend(user, friend);
     }
-
 
     @Override
     public List<User> getFriends(Integer id) {
         User user = getCheckUserThrow(id);
-        return storage.getFriends(user);
+        return userStorage.getFriends(user);
     }
-
 
     @Override
     public List<User> getSameFriends(Integer userId, Integer otherId) {
         User user1 = getCheckUserThrow(userId);
         User other = getCheckUserThrow(otherId);
-        return storage.getSameFriend(user1, other);
+        return userStorage.getSameFriend(user1, other);
     }
 
     @Override
     public List<Film> getUserRecommendations(Integer id) {
         getCheckUserThrow(id);
-        return storage.getUserRecommendations(id);
+        return userStorage.getUserRecommendations(id);
     }
 
     @Override
     public void deleteUser(Integer userId) {
-        User user = storage.getUserById(userId).orElseThrow(() -> new NotFoundException("Пользователь с id " + userId + " не найден"));
-        storage.deleteUser(user);
+        User user = userStorage.getUserById(userId).orElseThrow(() -> new NotFoundException("Пользователь с id " + userId + " не найден"));
+        userStorage.deleteUser(user);
     }
 
     public List<Event> getFeedByUserId(Integer userId) {

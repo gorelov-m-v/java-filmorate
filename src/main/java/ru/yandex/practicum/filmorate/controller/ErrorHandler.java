@@ -28,7 +28,6 @@ public class ErrorHandler {
         );
     }
 
-
     @ExceptionHandler
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public ErrorResponse handleNotFoundException(final NotFoundException e) {
@@ -37,7 +36,6 @@ public class ErrorHandler {
                 e.getMessage()
         );
     }
-
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
@@ -49,7 +47,6 @@ public class ErrorHandler {
         });
         return new ErrorResponse(String.join(", ", exeptions));
     }
-
 
     @ExceptionHandler
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)

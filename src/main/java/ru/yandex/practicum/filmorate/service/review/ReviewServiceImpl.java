@@ -12,57 +12,57 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ReviewServiceImpl implements ReviewService {
 
-    private final ReviewStorage storage;
+    private final ReviewStorage reviewStorage;
     private final FeedStorage feedStorage;
 
     @Override
     public Review createReview(Review review) {
-        review = storage.createReview(review);
+        review = reviewStorage.createReview(review);
         feedStorage.addEvent(review.getUserId(), "REVIEW", "ADD", review.getReviewId());
         return review;
     }
 
     @Override
     public Review updateReview(Review review) {
-        review = storage.updateReview(review);
+        review = reviewStorage.updateReview(review);
         feedStorage.addEvent(review.getUserId(), "REVIEW", "UPDATE", review.getReviewId());
         return review;
     }
 
     @Override
     public Review getById(Integer id) {
-        return storage.getById(id);
+        return reviewStorage.getById(id);
     }
 
     @Override
     public List<Review> getReviews(Integer filmId, Integer count) {
-        return storage.getReviews(filmId, count);
+        return reviewStorage.getReviews(filmId, count);
     }
 
     @Override
     public void deleteReview(Integer id) {
         Review review = getById(id);
-        storage.deleteReview(id);
+        reviewStorage.deleteReview(id);
         feedStorage.addEvent(review.getUserId(), "REVIEW", "REMOVE", review.getReviewId());
     }
 
     @Override
     public void addLike(Integer id, Integer userId) {
-        storage.addLike(id, userId);
+        reviewStorage.addLike(id, userId);
     }
 
     @Override
     public void addDislike(Integer id, Integer userId) {
-        storage.addDislike(id, userId);
+        reviewStorage.addDislike(id, userId);
     }
 
     @Override
     public void deleteLike(Integer id, Integer userId) {
-        storage.deleteLike(id, userId);
+        reviewStorage.deleteLike(id, userId);
     }
 
     @Override
     public void deleteDislike(Integer id, Integer userId) {
-        storage.deleteDislike(id, userId);
+        reviewStorage.deleteDislike(id, userId);
     }
 }

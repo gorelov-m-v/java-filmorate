@@ -10,17 +10,15 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class MpaServiceImpl implements MpaService {
-    private final MpaDbStorage storage;
-
+    private final MpaDbStorage mpaDbStorage;
 
     @Override
     public List<RateMPA> getAllRatings() {
-        return storage.getAllRatings();
+        return mpaDbStorage.getAllRatings();
     }
-
 
     @Override
     public RateMPA getMpaById(Integer id) {
-        return storage.getRateById(id);
+        return mpaDbStorage.getRateById(id);
     }
 }

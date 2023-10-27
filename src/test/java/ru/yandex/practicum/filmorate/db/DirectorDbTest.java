@@ -30,7 +30,6 @@ public class DirectorDbTest {
     private final DirectorStorage storage;
     private final FilmStorage storageFilm;
 
-
     @BeforeEach
     public void createParams() {
         RateMPA rateMPA = new RateMPA(1, null);
@@ -48,14 +47,12 @@ public class DirectorDbTest {
         storage.createDirector(new Director(1, "new Director"));
     }
 
-
     @Test
     public void testFindAllDirectors() {
         List<Director> directors = storage.getAllDirectors();
 
         assertEquals(1, directors.size());
     }
-
 
     @Test
     public void testFindByIdDirector() {

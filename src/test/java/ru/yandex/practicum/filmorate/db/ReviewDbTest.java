@@ -93,5 +93,4 @@ public class ReviewDbTest {
 
         assertThrows(NotFoundException.class, () -> storage.getById(1));
     }
-
 }

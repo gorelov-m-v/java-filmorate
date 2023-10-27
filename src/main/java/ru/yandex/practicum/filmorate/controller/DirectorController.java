@@ -12,35 +12,30 @@ import java.util.List;
 @RequestMapping("/directors")
 @RequiredArgsConstructor
 public class DirectorController {
-    private final DirectorService service;
-
+    private final DirectorService directorService;
 
     @GetMapping
     public List<Director> getDirectors() {
-        return service.getAllDirectors();
+        return directorService.getAllDirectors();
     }
-
 
     @GetMapping("/{id}")
     public Director getDirectorById(@PathVariable Integer id) {
-        return service.getDirectorById(id);
+        return directorService.getDirectorById(id);
     }
-
 
     @PostMapping
     public Director createDirector(@Valid @RequestBody Director director) {
-        return service.createDirector(director);
+        return directorService.createDirector(director);
     }
-
 
     @PutMapping
     public Director updateDirector(@Valid @RequestBody Director director) {
-        return service.updateDirector(director);
+        return directorService.updateDirector(director);
     }
-
 
     @DeleteMapping("/{id}")
     public void deleteDirector(@PathVariable Integer id) {
-        service.deleteDirectorById(id);
+        directorService.deleteDirectorById(id);
     }
 }

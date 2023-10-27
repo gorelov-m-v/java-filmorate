@@ -11,17 +11,16 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class DirectorServiceImpl implements DirectorService {
-    private final DirectorStorage storage;
-
+    private final DirectorStorage directorStorage;
 
     private Director getStorageDirectorId(Integer id) {
-        return storage.getDirectorById(id)
+        return directorStorage.getDirectorById(id)
                 .orElseThrow(() -> new NotFoundException("Режиссер с id " + id + " не найден."));
     }
 
     @Override
     public List<Director> getAllDirectors() {
-        return storage.getAllDirectors();
+        return directorStorage.getAllDirectors();
     }
 
     @Override
@@ -31,19 +30,19 @@ public class DirectorServiceImpl implements DirectorService {
 
     @Override
     public Director createDirector(Director director) {
-        return storage.createDirector(director);
+        return directorStorage.createDirector(director);
     }
 
     @Override
     public Director updateDirector(Director director) {
         getStorageDirectorId(director.getId());
-        storage.updateDirector(director);
+        directorStorage.updateDirector(director);
         return director;
     }
 
     @Override
     public void deleteDirectorById(Integer id) {
         getStorageDirectorId(id);
-        storage.deleteDirectorById(id);
+        directorStorage.deleteDirectorById(id);
     }
 }

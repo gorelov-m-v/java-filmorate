@@ -24,7 +24,6 @@ public class ReviewDbStorage implements ReviewStorage {
     private final NamedParameterJdbcTemplate namedParameterJdbcTemplate;
     private final FilmStorage filmStorage;
     private final UserStorage userStorage;
-    private final FeedStorage feedStorage;
 
     private Map<String, Object> getParams(Review review) {
         Map<String, Object> parameters = new HashMap<>();

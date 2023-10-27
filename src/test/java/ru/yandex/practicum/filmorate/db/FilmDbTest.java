@@ -29,7 +29,6 @@ public class  FilmDbTest {
     private final UserDbStorage userStorage;
     private final DirectorStorage storageDir;
 
-
     @BeforeEach
     public void createParams() {
         RateMPA rateMPA = new RateMPA(1, null);
@@ -54,7 +53,6 @@ public class  FilmDbTest {
         userStorage.createUser(user);
     }
 
-
     @Test
     public void testFindFilmById() {
         Optional<Film> userOptional = storage.getFilmById(1);
@@ -65,7 +63,6 @@ public class  FilmDbTest {
                         assertThat(user).hasFieldOrPropertyWithValue("id", 1)
                 );
     }
-
 
     @Test
     public void testFindAllFilm() {

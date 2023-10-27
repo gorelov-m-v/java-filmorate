@@ -16,9 +16,7 @@ import java.util.Map;
 @Component
 @RequiredArgsConstructor
 public class MpaDbStorage implements MpaStorage {
-
     private final NamedParameterJdbcTemplate namedParameterJdbcTemplate;
-
 
     @Override
     public RateMPA getRateById(Integer id) {
@@ -36,7 +34,6 @@ public class MpaDbStorage implements MpaStorage {
             throw new NotFoundException(String.format("Рейтинг с id %d не найден.", id));
         }
     }
-
 
     @Override
     public List<RateMPA> getAllRatings() {
