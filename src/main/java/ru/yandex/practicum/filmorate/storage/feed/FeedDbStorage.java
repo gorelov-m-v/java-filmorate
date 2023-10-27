@@ -35,7 +35,7 @@ public class FeedDbStorage implements FeedStorage {
             while (rs.next()) {
                 Event event = new Event();
                 event.setEventId(rs.getInt("event_id"));
-                event.setTimestamp(rs.getInt("timestamps"));
+                event.setTimestamp(rs.getLong("timestamp"));
                 event.setUserId(rs.getInt("user_id"));
                 event.setEventType(rs.getString("event_type"));
                 event.setOperation(rs.getString("operation"));
@@ -55,14 +55,15 @@ public class FeedDbStorage implements FeedStorage {
         event.setEntityId(entityId);
 
         String sql = "INSERT INTO feed " +
-                "(user_id, event_type, operation, entity_id) " +
-                "values(:user_id, :event_type, :operation, :entity_id)";
+                "(user_id, event_type, operation, entity_id, timestamp) " +
+                "values(:user_id, :event_type, :operation, :entity_id, :timestamp)";
 
         SqlParameterSource namedParameters = new MapSqlParameterSource()
                 .addValue("user_id", userId)
-                .addValue("eventType", eventType)
+                .addValue("event_type", eventType)
                 .addValue("operation", operation)
-                .addValue("entity_id", entityId);
+                .addValue("entity_id", entityId)
+                .addValue("timestamp", System.currentTimeMillis());
         KeyHolder keyHolder = new GeneratedKeyHolder();
         namedParameterJdbcTemplate.update(sql, namedParameters, keyHolder);
         event.setEventId((Integer) keyHolder.getKey());

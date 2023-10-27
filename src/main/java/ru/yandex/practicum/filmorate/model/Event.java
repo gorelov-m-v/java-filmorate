@@ -4,7 +4,7 @@ import lombok.Data;
 
 @Data
 public class Event {
-    private Integer timestamp;
+    private Long timestamp;
     private Integer userId;
     private String eventType;
     private String operation;

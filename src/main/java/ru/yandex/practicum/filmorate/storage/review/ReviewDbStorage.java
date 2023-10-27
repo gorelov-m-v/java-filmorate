@@ -140,8 +140,7 @@ public class ReviewDbStorage implements ReviewStorage {
         params.put("review_id", id);
 
         Review review = getById(id);
-
-        feedStorage.addEvent(review.getUserId(), "REVIEW", "UPDATE", review.getReviewId());
+        feedStorage.addEvent(review.getUserId(), "REVIEW", "REMOVE", review.getReviewId());
 
         namedParameterJdbcTemplate.update(deleteReviewSql, params);
     }
