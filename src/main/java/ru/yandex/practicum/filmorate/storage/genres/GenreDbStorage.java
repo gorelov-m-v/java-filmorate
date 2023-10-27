@@ -17,9 +17,7 @@ import java.util.Map;
 @Component
 @RequiredArgsConstructor
 public class GenreDbStorage implements GenreStorage {
-
     private final NamedParameterJdbcTemplate namedParameterJdbcTemplate;
-
 
     @Override
     public List<Genre> getAllGenres() {

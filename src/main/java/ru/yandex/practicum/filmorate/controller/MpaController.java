@@ -16,13 +16,12 @@ import java.util.List;
 @RequestMapping("/mpa")
 @RequiredArgsConstructor
 public class MpaController {
-    private final MpaService service;
-
+    private final MpaService mpaService;
 
     @GetMapping
     public List<RateMPA> getAllMpa() {
         log.info("Запрос на получение списка всех рейтингов");
-        List<RateMPA> rate = service.getAllRatings();
+        List<RateMPA> rate = mpaService.getAllRatings();
         log.info("Список рейтингов отправлен");
         return rate;
     }
@@ -30,7 +29,7 @@ public class MpaController {
     @GetMapping("/{id}")
     public RateMPA getMpaById(@PathVariable("id") Integer id) {
         log.info("Запрос на получение рейтинга по id");
-        RateMPA rate = service.getMpaById(id);
+        RateMPA rate = mpaService.getMpaById(id);
         log.info("Рейтинг отправлен");
         return rate;
     }

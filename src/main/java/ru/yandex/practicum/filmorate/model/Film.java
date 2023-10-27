@@ -18,6 +18,7 @@ import java.util.List;
 @Setter
 @Builder
 @Slf4j
+@Data
 public class Film {
     private Integer id;
     @NotEmpty(message = "название не может быть пустым")
@@ -32,4 +33,5 @@ public class Film {
     private int likes;
     private RateMPA mpa;
     private List<Genre> genres = new ArrayList<>();
+    private List<Director> directors = new ArrayList<>();
 }

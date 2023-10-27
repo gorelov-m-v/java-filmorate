@@ -11,7 +11,11 @@ public interface FilmStorage {
 
     void updateFilm(Film film);
 
+    List<Film> getSortFilm(Integer dirId, String sort);
+
     List<Film> getFilms();
+
+    List<Film> getMostPopular(Integer limit, Integer year, Integer genreId);
 
     Optional<Film> getFilmById(int id);
 
@@ -20,4 +24,15 @@ public interface FilmStorage {
     void removeLike(User user, Film film);
 
     List<Film> getUserFilms(User user);
+
+    List<Film> findCommonFilms(Integer userId, Integer friendId);
+
+    void deleteFilm(int filmId);
+
+    List<Film> getFilmByDirector(String by);
+
+    List<Film> getFilmByName(String query);
+
+    List<Film> getFilmsByParams(String query);
+
 }

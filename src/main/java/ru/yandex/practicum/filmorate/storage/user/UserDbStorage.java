@@ -7,19 +7,18 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.exeption.NotFoundException;
+import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.User;
+import ru.yandex.practicum.filmorate.storage.film.FilmDbStorage;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 @Slf4j
 @Component
 @RequiredArgsConstructor
 public class UserDbStorage implements UserStorage {
-
     private final NamedParameterJdbcTemplate namedParameterJdbcTemplate;
+    private final FilmDbStorage filmDbStorage;
 
     private Map<String, Object> getParams(User user) {
         Map<String, Object> parameters = new HashMap<>();
@@ -30,7 +29,6 @@ public class UserDbStorage implements UserStorage {
         parameters.put("user_id", user.getId());
         return parameters;
     }
-
 
     @Override
     public User createUser(User user) {
@@ -45,7 +43,6 @@ public class UserDbStorage implements UserStorage {
         return user;
     }
 
-
     @Override
     public void updateUser(User user) {
         String sql = "UPDATE users " +
@@ -59,10 +56,9 @@ public class UserDbStorage implements UserStorage {
         if (rows == 0) {
             log.warn("Пользователь с id {} не найден.", user.getId());
             throw new NotFoundException(
-                    String.format("Пользователь с id %d не найден.", user.getId()));
+                    String.format("Пользователь с id %d не найден", user.getId()));
         }
     }
-
 
     @Override
     public List<User> getUsers() {
@@ -78,7 +74,6 @@ public class UserDbStorage implements UserStorage {
 
         ));
     }
-
 
     @Override
     public Optional<User> getUserById(int id) {
@@ -102,7 +97,6 @@ public class UserDbStorage implements UserStorage {
         }
     }
 
-
     @Override
     public void addFriend(User user, User friend) {
         try {
@@ -124,7 +118,6 @@ public class UserDbStorage implements UserStorage {
         }
     }
 
-
     @Override
     public void removeFriend(User user, User friend) {
         try {
@@ -143,7 +136,6 @@ public class UserDbStorage implements UserStorage {
             throw new NotFoundException("Неизвестный пользователь.");
         }
     }
-
 
     @Override
     public List<User> getFriends(User user) {
@@ -195,5 +187,43 @@ public class UserDbStorage implements UserStorage {
                 rs.getDate("birthday").toLocalDate()
 
         ));
+    }
+
+    @Override
+    public void deleteUser(User user) {
+        try {
+            String deleteFriendsSql = "DELETE FROM friends WHERE user_id = :user_id OR friend_id = :user_id";
+            String deleteSql = "DELETE FROM users WHERE user_id = :user_id";
+
+            Map<String, Object> params = new HashMap<>();
+            params.put("user_id", user.getId());
+
+            namedParameterJdbcTemplate.update(deleteFriendsSql, params);
+            namedParameterJdbcTemplate.update(deleteSql, params);
+
+            log.info("Пользователь с id {} удален.", user.getId());
+        } catch (EmptyResultDataAccessException e) {
+            log.warn("Пользователь с id {} не найден.", user.getId());
+            throw new NotFoundException(String.format("Пользователь с id %d не найден.", user.getId()));
+        }
+    }
+
+    @Override
+    public List<Film> getUserRecommendations(Integer id) {
+        String sql = "SELECT * " +
+                "FROM likes AS l " +
+                "JOIN films AS f ON l.film_id = f.film_id " +
+                "JOIN mpa_ratings AS mr ON f.mpa_id = mr.mpa_id " +
+                "WHERE l.film_id NOT IN (SELECT film_id FROM likes WHERE user_id = :user_id)";
+
+        Map<String, Object> params = new HashMap<>();
+        params.put("user_id", id);
+
+        List<Film> recommendedFilmLis = filmDbStorage.createFilmList(sql, params);
+
+        filmDbStorage.loadFilmGenres(Objects.requireNonNull(recommendedFilmLis));
+        filmDbStorage.loadFilmDirector(recommendedFilmLis);
+
+        return recommendedFilmLis;
     }
 }

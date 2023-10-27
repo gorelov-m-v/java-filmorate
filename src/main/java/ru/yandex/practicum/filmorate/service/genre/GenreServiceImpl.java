@@ -10,15 +10,15 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class GenreServiceImpl implements GenreService {
-    private final GenreDbStorage storage;
+    private final GenreDbStorage genreDbStorage;
 
     @Override
     public Genre getGenreById(Integer id) {
-        return storage.getGenreById(id);
+        return genreDbStorage.getGenreById(id);
     }
 
     @Override
     public List<Genre> getAllGenres() {
-        return storage.getAllGenres();
+        return genreDbStorage.getAllGenres();
     }
 }
