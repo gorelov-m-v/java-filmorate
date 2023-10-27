@@ -457,6 +457,7 @@ public class FilmDbStorage implements FilmStorage {
                 film.setMpa(new RateMPA(rs.getInt("mpa_id"), rs.getString("mpa_name")));
                 list.add(film);
             }
+            list.stream().sorted(Comparator.comparing(Film::getId).reversed()).collect(Collectors.toList());
             return list;
         });
     }
@@ -547,7 +548,6 @@ public class FilmDbStorage implements FilmStorage {
         List<Film> films = createFilmList(sql, namedParameters);
         loadFilmGenres(films);
         loadFilmDirector(films);
-        films.sort(Comparator.comparing(Film::getId).reversed());
 
         return films;
     }
