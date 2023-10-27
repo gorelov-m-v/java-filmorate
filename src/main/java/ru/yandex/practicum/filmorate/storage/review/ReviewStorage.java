@@ -6,12 +6,20 @@ import java.util.List;
 
 public interface ReviewStorage {
     Review createReview(Review review);
+
     Review updateReview(Review review);
+
     Review getById(Integer id);
+
     List<Review> getReviews(Integer filmId, Integer count);
+
     void deleteReview(Integer id);
+
     void addLike(Integer id, Integer userId);
+
     void addDislike(Integer id, Integer userId);
+
     void deleteLike(Integer id, Integer userId);
+
     void deleteDislike(Integer id, Integer userId);
 }
