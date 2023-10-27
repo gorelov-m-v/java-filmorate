@@ -56,7 +56,7 @@ public class UserDbStorage implements UserStorage {
         if (rows == 0) {
             log.warn("Пользователь с id {} не найден.", user.getId());
             throw new NotFoundException(
-                    String.format("Пользователь с id %d не найден.", user.getId()));
+                    String.format("Пользователь с id %d не найден", user.getId()));
         }
     }
 
