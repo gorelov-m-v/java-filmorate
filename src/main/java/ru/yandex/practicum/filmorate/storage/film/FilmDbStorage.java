@@ -539,13 +539,15 @@ public class FilmDbStorage implements FilmStorage {
                 "LEFT JOIN mpa_ratings AS mr ON f.mpa_id = mr.mpa_id " +
                 "LEFT JOIN films_directors AS fd ON f.film_id = fd.film_id " +
                 "LEFT JOIN directors AS d ON fd.director_id = d.director_id " +
-                "WHERE LOWER(f.name) LIKE :query OR LOWER(d.director_name) LIKE :query";
+                "WHERE LOWER(f.name) LIKE :query OR LOWER(d.director_name) LIKE :query " +
+                "ORDER BY f.film_id DESC";
 
         Map<String, Object> namedParameters = new HashMap<>();
         namedParameters.put("query", "%" + query + "%");
         List<Film> films = createFilmList(sql, namedParameters);
         loadFilmGenres(films);
         loadFilmDirector(films);
+        films.sort(Comparator.comparing(Film::getId).reversed());
 
         return films;
     }
