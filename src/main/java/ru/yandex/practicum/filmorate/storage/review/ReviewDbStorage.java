@@ -11,6 +11,7 @@ import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.exeption.NotFoundException;
 import ru.yandex.practicum.filmorate.model.Review;
+import ru.yandex.practicum.filmorate.storage.feed.FeedStorage;
 import ru.yandex.practicum.filmorate.storage.film.FilmStorage;
 import ru.yandex.practicum.filmorate.storage.user.UserStorage;
 
@@ -23,6 +24,7 @@ public class ReviewDbStorage implements ReviewStorage {
     private final NamedParameterJdbcTemplate namedParameterJdbcTemplate;
     private final FilmStorage filmStorage;
     private final UserStorage userStorage;
+    private final FeedStorage feedStorage;
 
     private Map<String, Object> getParams(Review review) {
         Map<String, Object> parameters = new HashMap<>();
@@ -58,6 +60,8 @@ public class ReviewDbStorage implements ReviewStorage {
         namedParameterJdbcTemplate.update(sql, namedParameters, keyHolder);
         review.setReviewId((Integer) keyHolder.getKey());
 
+        feedStorage.addEvent(review.getUserId(), "REVIEW", "ADD", review.getReviewId());
+
         return review;
     }
 
@@ -80,6 +84,8 @@ public class ReviewDbStorage implements ReviewStorage {
                             review.getFilmId(),
                             review.getUserId()));
         }
+
+        feedStorage.addEvent(review.getUserId(), "REVIEW", "UPDATE", review.getReviewId());
 
         return getById(review.getReviewId());
     }
@@ -132,6 +138,10 @@ public class ReviewDbStorage implements ReviewStorage {
 
         Map<String, Object> params = new HashMap<>();
         params.put("review_id", id);
+
+        Review review = getById(id);
+
+        feedStorage.addEvent(review.getUserId(), "REVIEW", "UPDATE", review.getReviewId());
 
         namedParameterJdbcTemplate.update(deleteReviewSql, params);
     }

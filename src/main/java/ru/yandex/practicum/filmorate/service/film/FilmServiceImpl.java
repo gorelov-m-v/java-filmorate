@@ -7,6 +7,7 @@ import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.SearchFilmRequest;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.director.DirectorStorage;
+import ru.yandex.practicum.filmorate.storage.feed.FeedStorage;
 import ru.yandex.practicum.filmorate.storage.film.FilmStorage;
 import ru.yandex.practicum.filmorate.storage.user.UserStorage;
 
@@ -22,6 +23,7 @@ public class FilmServiceImpl implements FilmService {
     private final FilmStorage storage;
     private final UserStorage userStorage;
     private final DirectorStorage storageDir;
+    private final FeedStorage feedStorage;
 
     private Film getStorageFilmId(Integer id) {
         return storage.getFilmById(id).orElseThrow(() -> new NotFoundException("Фильм с id " + id + " не найден"));
@@ -66,6 +68,7 @@ public class FilmServiceImpl implements FilmService {
     public void addLike(Integer userId, Integer filmId) {
         User user = userStorage.getUserById(userId).orElseThrow(() -> new NotFoundException("Пользователь не найден"));
         Film film = getStorageFilmId(filmId);
+        feedStorage.addEvent(userId, "LIKE", "ADD", filmId);
         storage.addLike(user, film);
     }
 
@@ -75,6 +78,7 @@ public class FilmServiceImpl implements FilmService {
         User user = userStorage.getUserById(userId)
                 .orElseThrow(() -> new NotFoundException("Пользователь c id - " + userId + " не найден"));
         Film film = getStorageFilmId(filmId);
+        feedStorage.addEvent(userId, "LIKE", "REMOVE", filmId);
         storage.removeLike(user, film);
     }
 
