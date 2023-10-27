@@ -13,6 +13,7 @@ import javax.validation.constraints.NotNull;
 @Builder
 @Slf4j
 @ToString
+@EqualsAndHashCode
 public class Review {
     private Integer reviewId;
     @NotEmpty(message = "текст отзыва не может быть пустым")
